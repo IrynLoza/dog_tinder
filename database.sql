@@ -1,29 +1,28 @@
-CREATE TABLE "user" (
+CREATE TABLE "users" (
   "user_id" SERIAL PRIMARY KEY,
   "user_name" varchar,
   "password" varchar,
   "email" varchar,
   "breed" varchar,
-  "image" image,
   "location" varchar,
   "gender" varchar,
   "summary" text,
   "preferences" text
 );
 
-CREATE TABLE "image" (
+CREATE TABLE "images" (
   "image_id" int,
   "image_url" varchar,
   "user_id" int
 );
 
-CREATE TABLE "like" (
+CREATE TABLE "likes" (
   "like_id" SERIAL PRIMARY KEY,
   "user_id" int,
   "user_id_of_liked_user" int
 );
 
-CREATE TABLE "dislike" (
+CREATE TABLE "dislikes" (
   "dislike_id" SERIAL PRIMARY KEY,
   "user_id" int,
   "user_id_of_disliked_user" int
