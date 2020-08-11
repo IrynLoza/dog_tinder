@@ -1,0 +1,1 @@
+from model import db, User, Image, Like, Dislike, connect_to_db
