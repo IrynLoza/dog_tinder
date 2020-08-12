@@ -14,20 +14,8 @@ model.connect_to_db(server.app)
 model.db.create_all()
 
 
-
+#Generate fake data
 fake = Faker()
-
-# # create user_name
-# name = fake.user_name()
-
-# #create addresses
-# fake.address()
-
-# # create password
-# password = fake.password()
-
-# #create email
-# email = fake.email()
 
 for i in range(10):
     user_name = fake.user_name()
