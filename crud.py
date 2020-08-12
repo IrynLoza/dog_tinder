@@ -17,7 +17,16 @@ def get_users():
     """Get all users objects"""
 
     return User.query.all()
-        
+
+def get_user_by_id(user_id):
+    """Get user object by id"""
+
+    return User.query.get(user_id) 
+
+def get_user_by_email(email):
+    """Get user object by email"""
+
+    return User.query.filter(User.email == email).one()            
 
 
 if __name__ == '__main__':
