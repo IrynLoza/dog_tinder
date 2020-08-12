@@ -32,11 +32,14 @@ breed_list = [
             ]
 
 gender_list = ['male', 'femaale']
-summary_list = ['Friendly, fluffy friend', 'Adorable buddy for walk', 'Can be your best friend',
-            'Couch potato', 'New dog friends lover', 'Smart cookie', 'Love treats and dogs',
-            'Make your life better', 'Bring a lot of fun to your life', 'Show you the best dog park'
-            ]
-preferences_list = ['Looking for new friends', 'Obsessed with husky', 'Wanna play together',
+summary_list = [
+                'Friendly, fluffy friend', 'Adorable buddy for walk', 'Can be your best friend',
+                'Couch potato', 'New dog friends lover', 'Smart cookie', 'Love treats and dogs',
+                'Make your life better', 'Bring a lot of fun to your life', 
+                'Show you the best dog park'
+                ]
+preferences_list = [
+                'Looking for new friends', 'Obsessed with huskies', 'Wanna play together',
                 'Looking for corgi for seriouse relations', 'Join my amazing company',
                 'How about shedding together?', 'Looking for you, yes, you', 
                 'Let me treats and I will love you', 'Show you my favorite spot', 
