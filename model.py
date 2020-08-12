@@ -2,7 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
-def connect_to_db(flask_app, db_uri='postgresql:///ratings', echo=True):
+def connect_to_db(flask_app, db_uri='postgresql:///tinder', echo=True):
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     flask_app.config['SQLALCHEMY_ECHO'] = echo
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -20,19 +20,27 @@ class User(db.Model):
 
     user_id = db.Column(db.Integer,
                         autoincrement=True,
-                        primary_key=True)  
-    user_name = db.Column(db.String, unique=True, nullable=False) 
+                        primary_key=True,
+                        )  
+    user_name = db.Column(db.String, nullable=False) 
     password = db.Column(db.String, nullable=False)                               
-    email = db.Column(db.String, unique=True, nullable=False)
-    breed = db.Column(db.String, nullable=True)
-    location = db.Column(db.String, nullable=True)
-    gender = db.Column(db.String, nullable=True)
-    summary = db.Column(db.Text, nullable=True)
-    preferences = db.Column(db.Text, nullable=True)
+    email = db.Column(db.String, nullable=False)
+    breed = db.Column(db.String)
+    location = db.Column(db.String)
+    gender = db.Column(db.String)
+    summary = db.Column(db.Text)
+    preferences = db.Column(db.Text)
+
+    owner = db.relationship('Like', backref='owner_id', foreign_keys = 'Like.user_id')
+    target = db.relationship('Like', backref='target_id', foreign_keys = 'Like.target_user_id')
+
+    owner = db.relationship('Dislike', backref='dislike_owner_id', foreign_keys = 'Dislike.user_id')
+    target = db.relationship('Dislike', backref='dislike_target_id', foreign_keys = 'Dislike.target_user_id')
+   
 
 
     def __repr__(self):
-        return f'<User user_id={self.user_id} user_name={self.user_name} email={self.email}>' 
+        return f'<User id={self.user_id} name={self.user_name} email={self.email}>' 
        
 
 class Image(db.Model):
@@ -42,7 +50,8 @@ class Image(db.Model):
 
     image_id = db.Column(db.Integer,
                         autoincrement=True,
-                        primary_key=True)  
+                        primary_key=True,
+                        )  
     image_url = db.Column(db.String, nullable=False) 
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
@@ -51,8 +60,9 @@ class Image(db.Model):
     
 
     def __repr__(self):
-        return f'<User image_id={self.image_id} image_url={self.image_url}>' 
-       
+        return f'<Image id={self.image_id} url={self.image_url}>' 
+
+# test1 = User(user_name='ted', password='test', email='test@gmail.com')       
 
 class Like(db.Model):
     """A user likes."""
@@ -64,14 +74,11 @@ class Like(db.Model):
                         primary_key=True)  
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    user_id_of_liked_user = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-
-    current_user = db.relationship('User', backref='likes')
-    liked_user = db.relationship('User', backref='likes')
+    target_user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
 
     def __repr__(self):
-        return f'<User like_id={self.like_id} user_id={self.user_id} liked_user={self.user_id_of_liked_user}>' 
+        return f'<Like id={self.like_id}>' 
 
 class Dislike(db.Model):
     """A user dislikes."""
@@ -83,14 +90,12 @@ class Dislike(db.Model):
                         primary_key=True)  
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-    user_id_of_disliked_user = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    target_user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
-    cur_user = db.relationship('User', backref='dislikes')
-    disliked_user = db.relationship('User', backref='dislikes')    
-    
+
 
     def __repr__(self):
-        return f'<User dislike_id={self.dislike_id} user_id={self.user_id} disliked_user={self.user_id_of_disliked_user}>' 
+        return f'<Dislike id={self.dislike_id}>' 
  
 
 
