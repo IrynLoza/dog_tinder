@@ -40,7 +40,7 @@ class User(db.Model):
 
 
     def __repr__(self):
-        return f'<User id={self.user_id} name={self.user_name} email={self.email}>' 
+        return f'<User id={self.user_id} name={self.user_name} email={self.email} breed={self.breed}>' 
        
 
 class Image(db.Model):
