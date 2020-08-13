@@ -2,7 +2,7 @@ from model import db, User, Image, Like, Dislike, connect_to_db
 import requests
 import json
 
-#***CREATE USER AND GET DATA***
+#***CREATE USER AND GET USER DATA***
 def create_user(user_name, password, email, breed, location, gender,
                 summary, preferences):
     """Create and return a new user."""
@@ -49,7 +49,7 @@ def get_breeds():
     return list(breeds['message'].keys())
 
 
-#***CREATE IMAGE AND GET DATA***
+#***CREATE IMAGE AND GET IMAGE DATA***
 def create_image(image_url, user_id):
     """Create and return an image.""" 
 
@@ -69,13 +69,13 @@ def get_images():
 
 def get_random_image_by_breed(breed):
     """Get and return random image by breed"""
-    
+
     imgs_url = json.loads(requests.get(f'https://dog.ceo/api/breed/{breed}/images/random').content)
     
     return imgs_url['message']   
 
 
-#***CREATE LIKE AND GET DATA***
+#***CREATE LIKE AND GET LIKE DATA***
 def create_like(user_id, target_user_id):
     """Create and return a like.""" 
 
@@ -87,7 +87,17 @@ def create_like(user_id, target_user_id):
     return like
 
 
-#***CREATE DISLIKE AND GET DATA***
+def get_likes():
+    """Get and return all likes"""
+
+    return Like.query.all()
+
+def get_likes_by_user(user_id):
+    """Get and return likes by user"""
+
+    return Like.query.filter(Like.user_id == user_id).all()
+
+#***CREATE DISLIKE AND GET DISLIKE DATA***
 def create_dislike(user_id, target_user_id):
     """Create and return a dislike.""" 
 
@@ -97,6 +107,18 @@ def create_dislike(user_id, target_user_id):
     db.session.commit()
 
     return dislike
+
+ 
+def get_dislikes():
+    """Get and return all dislikes"""
+
+    return Dislike.query.all()
+
+
+def get_dislikes_by_user(user_id):
+    """Get and return dislikes by user"""
+    
+    return Dislike.query.filter(Dislike.user_id == user_id).all()
 
 
 
