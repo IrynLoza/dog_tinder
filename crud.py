@@ -1,4 +1,6 @@
 from model import db, User, Image, Like, Dislike, connect_to_db
+import requests
+import json
 
 def create_user(user_name, password, email, breed, location, gender,
                 summary, preferences):
@@ -26,7 +28,29 @@ def get_user_by_id(user_id):
 def get_user_by_email(email):
     """Get user object by email"""
 
-    return User.query.filter(User.email == email).one()            
+    return User.query.filter(User.email == email).one() 
+
+def get_breeds():
+    """"""
+
+    breeds = json.loads(requests.get('https://dog.ceo/api/breeds/list/all').content)
+    return list(breeds['message'].keys())
+
+def create_image(image_url, user_id):
+    """Create and return a new image.""" 
+
+    image = Image(image_url=image_url, user_id=user_id)
+
+    db.session.add(image)
+    db.session.commit()
+
+    return image   
+
+def get_random_image_by_breed(breed):
+    """"""
+    imgs_url = json.loads(requests.get(f'https://dog.ceo/api/breed/{breed}/images/random').content)
+    
+    return imgs_url['message']   
 
 
 if __name__ == '__main__':
