@@ -1,5 +1,11 @@
 import os
+import requests
 import json
+
+# import cloudinary
+# import cloudinary.uploader
+# import cloudinary.api
+
 from random import choice, randint
 from faker import Faker
 
@@ -13,25 +19,22 @@ os.system('createdb tinder')
 model.connect_to_db(server.app)
 model.db.create_all()
 
-
 #Generate fake data
 fake = Faker()
 
-# generate locations:
-# fake.address()
-# fake.zipcode_in_state('CA')
+# #install cloudinary config
+# cloudinary.config(  
+#     #import api_key from sh 
+#     cloudinary_key = os.environ['cloudinary_api_key'],
+#     cloudinary_secret = os.environ['cloud_secret_key'],
+#     cloudinary_name = os.environ['cloudinary_name']
+# )
 
-# generate dog name
-# fake.first_name()
+#***CREATE USERS AND IMAGES***
+breed_list = crud.get_breeds()
 
-breed_list = [
-            'Mix', 'Welsh Corgi Pembroke', 'German Shepherd', 'Husky', 'Bulldog', 
-            'St. Bernard', 'Chow Chow', 'Labradoodle', 'Beagle', 'Labrador Retriever',
-            'Poodle', 'Pug', 'Border Colliie', 'Dachshund', 'Pomeranian', 'Doberman',
-            'Shiba Inu', 'Rottweiler', 'Chihuahuas', 'Yorkshire Terriers'
-            ]
+gender_list = ['male', 'female']
 
-gender_list = ['male', 'femaale']
 summary_list = [
                 'Friendly, fluffy friend', 'Adorable buddy for walk', 'Can be your best friend',
                 'Couch potato', 'New dog friends lover', 'Smart cookie', 'Love treats and dogs',
@@ -47,7 +50,7 @@ preferences_list = [
                 'Ready for everyone' 
                 ]        
 
-for i in range(100):
+for i in range(10):
     user_name = fake.user_name()
     password = fake.password() 
     email = fake.email()
@@ -60,7 +63,9 @@ for i in range(100):
     user = crud.create_user(user_name, password, email, breed, location, gender, summary, 
                             preferences) 
      
+    # create two images for every user
+    for n in range(2):
+        image_url = crud.get_random_image_by_breed(breed)
+        user_id = user.user_id
 
-# fake = Faker(['en_US'])
-# for _ in range(10):
-#     print(fake.name())
+        crud.create_image(image_url, user_id) 
