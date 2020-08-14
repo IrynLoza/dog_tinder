@@ -7,6 +7,13 @@ app = Flask(__name__)
 app.secret_key = 'dev'
 app.jinja_env.undefined = StrictUndefined
 
+@app.route("/")
+def root():
+    """Show the main page"""
+
+    return render_template("base.html")
+
+
 
 if __name__ == '__main__':
     connect_to_db(app)
