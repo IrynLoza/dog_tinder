@@ -41,6 +41,7 @@ summary_list = [
                 'Make your life better', 'Bring a lot of fun to your life', 
                 'Show you the best dog park'
                 ]
+
 preferences_list = [
                 'Looking for new friends', 'Obsessed with huskies', 'Wanna play together',
                 'Looking for corgi for seriouse relations', 'Join my amazing company',
@@ -50,7 +51,8 @@ preferences_list = [
                 'Ready for everyone' 
                 ]        
 
-for i in range(10):
+for i in range(100):
+    #create 100 users
     user_name = fake.user_name()
     password = fake.password() 
     email = fake.email()
@@ -63,9 +65,25 @@ for i in range(10):
     user = crud.create_user(user_name, password, email, breed, location, gender, summary, 
                             preferences) 
      
-    # create two images for every user
-    for n in range(2):
+    # create 3 images for every user
+    for n in range(3):
         image_url = crud.get_random_image_by_breed(breed)
         user_id = user.user_id
 
         crud.create_image(image_url, user_id) 
+
+        # # create likes for users
+        # for y in range(2):
+        #     user_id = user.user_id
+        #     target_user = choice(crud.get_users())
+        #     target_user_id = target_user.user_id
+        #     if user_id % 2 == 0 and user_id != target_user_id:
+        #         crud.create_like(user_id, target_user_id)
+
+        #     # create dislikes for users    
+        #     for z in range(2):
+        #         user_id = user.user_id
+        #         target_user = choice(crud.get_users())
+        #         target_user_id = target_user.user_id
+        #         if user_id % 2 != 0 and user_id != target_user_id:
+        #             crud.create_dislike(user_id, target_user_id)    
