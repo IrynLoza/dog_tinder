@@ -32,7 +32,7 @@ def get_user_by_id(user_id):
 def get_user_by_user_name(user_name):
     """Get user object by user name"""
 
-    return User.query.get(user_name)    
+    return User.query.filter(User.user_name == user_name).one()    
 
 
 def get_user_by_email(email):
@@ -96,6 +96,7 @@ def get_likes_by_user(user_id):
     """Get and return likes by user"""
 
     return Like.query.filter(Like.user_id == user_id).all()
+   
 
 #***CREATE DISLIKE AND GET DISLIKE DATA***
 def create_dislike(user_id, target_user_id):
