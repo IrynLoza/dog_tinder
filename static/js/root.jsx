@@ -1,5 +1,11 @@
 'use strict';
 
+// document.onload(function(){
+//  
+
+// })
+
+
 
 const Router = ReactRouterDOM.BrowserRouter;
 const Route = ReactRouterDOM.Route;
@@ -25,14 +31,23 @@ function Homepage() {
             },
         })
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => {
+            if(data.status === 'ok'){
+                // browser api for store access_token in local storage
+                localStorage.setItem('seesion-key', data.access_token);
+                // redirect on main page
+            } else {
+                console.log(data.message);
+            }
+
+        })
     }
     return (<div> 
                 <h1> Welcome to Dog Tinder! </h1>
                 <p> Bring more fun to you fluffy friend life! </p>
                 {/* *** The main image should be here *** */}
                 {/* <img src="/static/images/main.png"></img> */}
-                <form>
+                <form> 
                 <label>Username</label>
                 <input type="text" name="username" onChange={e => setName(e.target.value)}></input>
 
@@ -47,15 +62,6 @@ function Homepage() {
 }
 
 
-// function login(e) {
-//     e.preventDefault();
-
-//     console.log(e.target.value)
-//     // fetch('/api/users')
-//     // .then(response => response.json())
-//     // .then(data => console.log(data))
-// }
-
 function About() {
     return <div> About </div>
 }
@@ -65,6 +71,15 @@ function UserProfile() {
 }
 
 function App() {
+    React.useEffect(() => {
+        const seesionKey = localStorage.getItem('seesion-key');
+        if(seesionKey){
+            console.log('session', seesionKey)
+        } else {
+            console.log('NO session')
+        }
+    }, []);
+
     return (
         <Router>
             <div>

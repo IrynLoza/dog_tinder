@@ -1,13 +1,20 @@
 from flask import Flask, render_template, request, flash, session, redirect, jsonify
-from flask_jwt import JWT, jwt_required, current_identity
+from flask_jwt_extended import JWTManager, create_access_token
+
 from model import connect_to_db
+
 import json
 import crud
+import os
+
 from jinja2 import StrictUndefined
 
 app = Flask(__name__)
 app.secret_key = 'dev'
+app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']
 app.jinja_env.undefined = StrictUndefined
+
+jwt = JWTManager(app)
 
 @app.route("/")
 def root():
@@ -34,7 +41,11 @@ def login():
     if user:
         if user.password == data['password']:
             session['user'] = {'user_name': user.user_name, 'user_id': user.user_id}
-            return jsonify({'status': 'ok'})
+
+            #create access token for user 
+            #use jwt (json web token) instead of cookies
+            access_token = create_access_token(identity = {'user_name': user.user_name, 'user_id': user.user_id})
+            return jsonify({'status': 'ok', 'access_token': access_token})
     return jsonify({'status': 'ERROR', 'message': 'Username or passwor is not correct'})
 
    
