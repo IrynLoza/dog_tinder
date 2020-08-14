@@ -11,15 +11,20 @@ function Homepage() {
     return (<div> 
                 <h1> Welcome to Dog Tinder! </h1>
                 <p> Bring more fun to you fluffy friend life! </p>
-                <img src="/static/images/main.png" width="50%"></img>
-                Username:
-                <input type="text"></input>
-                Password:
-                <input type="text"></input>
-                <button> Log in </button>
-                <button> Sing in </button>
+                {/* *** The main image should be here *** */}
+                {/* <img src="/static/images/main.png"></img> */}
+                <form>
+                <label>Username</label>
+                <input type="text" name="username"></input>
+
+                <label>Password</label>
+                <input type="text" name="password"></input>
+                <button name="log_in"> Log in </button>
+                <button name="sing_in"> Sing in </button>
+                </form>
             </div>
     );
+    
 }
 
 function About() {
@@ -36,15 +41,15 @@ function App() {
             <div>
                 <nav>
                     <ul>
-                        <li>
+                        <p>
                             <Link to="/"> Home </Link>
-                        </li>
-                        <li>
+                        </p>
+                        <p>
                             <Link to="/about"> About </Link>
-                        </li>
-                        <li>
+                        </p>
+                        <p>
                             <Link to="/user-profile"> Profile </Link>
-                        </li>
+                        </p>
                     </ul>
                 </nav>
                     <Switch>
@@ -63,4 +68,4 @@ function App() {
     );
 }
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'))
