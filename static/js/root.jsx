@@ -25,6 +25,7 @@ function Login(props) {
     
         console.log('userName', userName)
         console.log('password', password)
+
         fetch('/api/login', {
             method: 'POST', 
             body: JSON.stringify({userName, password}),
@@ -37,9 +38,11 @@ function Login(props) {
             if(data.status === 'ok'){
                 // browser api for store access_token in local storage
                 localStorage.setItem('seesion-key', data.access_token);
+                redirect: window.location.replace('/#/user-profile')
                 // redirect on main page
             } else {
                 console.log(data.message);
+                alert('Invalid Email or Password')
             }
 
         })
@@ -62,6 +65,13 @@ function Login(props) {
     );
     
 }
+
+
+//create function to handle click on log in button
+//if log in
+//redirect to user-profile
+//else
+//alert 
 
 function HeaderNavigation() {
     if (window.location.pathname === '/') return null;
