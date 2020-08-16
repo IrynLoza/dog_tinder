@@ -1,20 +1,22 @@
 'use strict';
 
+// const { func } = require("prop-types");
+
 // document.onload(function(){
 //  
 
 // })
 
-
-
-const Router = ReactRouterDOM.BrowserRouter;
+// const Router = ReactRouterDOM.BrowserRouter;
+const Router = ReactRouterDOM.HashRouter;
 const Route = ReactRouterDOM.Route;
 const Link = ReactRouterDOM.Link;
 const Prompt = ReactRouterDOM.Prompt;
 const Switch = ReactRouterDOM.Switch;
 const Redirect = ReactRouterDOM.Redirect;
 
-function Homepage() {
+function Login(props) {
+    console.log('props==>', props);
     const [userName, setName] = React.useState('');
     const [password, setPassword] = React.useState('');
 
@@ -42,7 +44,7 @@ function Homepage() {
 
         })
     }
-    return (<div> 
+    return (<div style={ props.isLogged ? { display : "none"}  : { display: "block"}}> 
                 <h1> Welcome to Dog Tinder! </h1>
                 <p> Bring more fun to you fluffy friend life! </p>
                 {/* *** The main image should be here *** */}
@@ -61,55 +63,81 @@ function Homepage() {
     
 }
 
-
-function About() {
-    return <div> About </div>
+function HeaderNavigation() {
+    if (window.location.pathname === '/') return null;
+    return (
+        <div>
+            <nav>
+                <ul>
+                    <li>
+                        <div>
+                            Logout 
+                        </div>
+                    </li>
+                    <li>
+                        <Link to="/user-profile"> Profile </Link>
+                    </li>
+                    <li>
+                        <Link to="/matches"> Matches </Link>
+                    </li>
+                    <li>
+                        <Link to="/chat"> Chat </Link>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    );
 }
 
 function UserProfile() {
     return <div> User Profile </div>
 }
 
+function Matches() {
+    return <div> List of mathes </div>
+}
+
+function Chat() {
+    return <div> Chat </div>
+}
+
+
 function App() {
+    const state = {}
     React.useEffect(() => {
         const seesionKey = localStorage.getItem('seesion-key');
         if(seesionKey){
-            console.log('session', seesionKey)
+            state.logged = true
         } else {
-            console.log('NO session')
+            state.logged = false
         }
-    }, []);
+    });
 
     return (
         <Router>
             <div>
-                <nav>
-                    <ul>
-                        <p>
-                            <Link to="/"> Home </Link>
-                        </p>
-                        <p>
-                            <Link to="/about"> About </Link>
-                        </p>
-                        <p>
-                            <Link to="/user-profile"> Profile </Link>
-                        </p>
-                    </ul>
-                </nav>
-                    <Switch>
-                        <Route path="/user-profile">
-                            <UserProfile />
-                        </Route>
-                        <Route path="/about">
-                            <About />
-                        </Route>
-                        <Route path="/">
-                            <Homepage />
-                        </Route>
-                    </Switch>
+                <HeaderNavigation />
+                <Switch>
+                    <Route path="/chat">
+                        <Chat />
+                    </Route>
+                    <Route path="/matches">
+                        <Matches />
+                    </Route>
+                    <Route path="/user-profile">
+                        <UserProfile />
+                    </Route>
+                    <Route path="/">
+                        <Login />
+                    </Route>
+                    <Redirect to="/"/>
+                </Switch>
             </div>
         </Router>
     );
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
+
+
+{/* <Route path="users/:id" component={Users} /> */}
