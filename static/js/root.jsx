@@ -7,18 +7,38 @@
 
 // })
 
-// const Router = ReactRouterDOM.BrowserRouter;
-const Router = ReactRouterDOM.HashRouter;
+const Router = ReactRouterDOM.BrowserRouter;
+// const Router = ReactRouterDOM.HashRouter;
 const Route = ReactRouterDOM.Route;
 const Link = ReactRouterDOM.Link;
 const Prompt = ReactRouterDOM.Prompt;
 const Switch = ReactRouterDOM.Switch;
 const Redirect = ReactRouterDOM.Redirect;
+const useLocation = ReactRouterDOM.useLocation;
+const useHistory = ReactRouterDOM.useHistory;
+
+function Logout(){
+    const history = useHistory();
+    
+    function logout(){
+        localStorage.removeItem('session-key');
+        history.push("/");
+    }
+    return (
+        <a className='logout' onClick={logout}>Logout</a>
+    )
+}
 
 function Login(props) {
-    console.log('props==>', props);
+    const sessionKey = localStorage.getItem('session-key');
+    const history = useHistory();
+    if(sessionKey){
+        history.push("/user-profile");
+    }
+
     const [userName, setName] = React.useState('');
     const [password, setPassword] = React.useState('');
+
 
     function login(e) {
         e.preventDefault();
@@ -37,9 +57,10 @@ function Login(props) {
         .then(data => {
             if(data.status === 'ok'){
                 // browser api for store access_token in local storage
-                localStorage.setItem('seesion-key', data.access_token);
-                redirect: window.location.replace('/#/user-profile')
-                // redirect on main page
+                localStorage.setItem('session-key', data.access_token);
+                history.push("/user-profile");
+                console.log('key', localStorage.getItem('session-key'))
+
             } else {
                 console.log(data.message);
                 alert('Invalid Email or Password')
@@ -47,7 +68,7 @@ function Login(props) {
 
         })
     }
-    return (<div style={ props.isLogged ? { display : "none"}  : { display: "block"}}> 
+    return (<div> 
                 <h1> Welcome to Dog Tinder! </h1>
                 <p> Bring more fun to you fluffy friend life! </p>
                 {/* *** The main image should be here *** */}
@@ -66,24 +87,13 @@ function Login(props) {
     
 }
 
-
-//create function to handle click on log in button
-//if log in
-//redirect to user-profile
-//else
-//alert 
-
 function HeaderNavigation() {
-    if (window.location.pathname === '/') return null;
+    const location = useLocation();
+    if (location.pathname === '/') return null;
     return (
         <div>
             <nav>
                 <ul>
-                    <li>
-                        <div>
-                            Logout 
-                        </div>
-                    </li>
                     <li>
                         <Link to="/user-profile"> Profile </Link>
                     </li>
@@ -92,6 +102,9 @@ function HeaderNavigation() {
                     </li>
                     <li>
                         <Link to="/chat"> Chat </Link>
+                    </li>
+                    <li>
+                        <Logout />
                     </li>
                 </ul>
             </nav>
@@ -112,35 +125,31 @@ function Chat() {
 }
 
 
-function App() {
-    const state = {}
-    React.useEffect(() => {
-        const seesionKey = localStorage.getItem('seesion-key');
-        if(seesionKey){
-            state.logged = true
-        } else {
-            state.logged = false
-        }
-    });
+function PrivateRoute(){
+    const sessionKey = localStorage.getItem('session-key');
+    const history = useHistory();
+    if(!sessionKey){
+        history.push("/");
+    }
+    return (
+        <div>
+            <Route path="/chat"><Chat /></Route>
+            <Route path="/matches"><Matches /></Route>
+            <Route path="/user-profile"><UserProfile /></Route>
+        </div>
+    );
 
+}
+
+function App() {
     return (
         <Router>
             <div>
                 <HeaderNavigation />
                 <Switch>
-                    <Route path="/chat">
-                        <Chat />
-                    </Route>
-                    <Route path="/matches">
-                        <Matches />
-                    </Route>
-                    <Route path="/user-profile">
-                        <UserProfile />
-                    </Route>
-                    <Route path="/">
-                        <Login />
-                    </Route>
-                    <Redirect to="/"/>
+                    {/* exact show the main route */}
+                    <Route exact path="/"><Login /></Route> 
+                    <PrivateRoute />
                 </Switch>
             </div>
         </Router>
@@ -151,3 +160,4 @@ ReactDOM.render(<App />, document.getElementById('root'))
 
 
 {/* <Route path="users/:id" component={Users} /> */}
+{/* <Redirect to="/"/> */}
