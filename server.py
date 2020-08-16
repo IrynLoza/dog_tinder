@@ -16,11 +16,17 @@ app.jinja_env.undefined = StrictUndefined
 
 jwt = JWTManager(app)
 
-@app.route("/")
-def root():
-    """Show the main page"""
+# @app.route("/")
+# def root():
+#     """Show the main page"""
 
-    return render_template("index.html")
+#     return render_template("index.html")
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    
+    return render_template('index.html')
 
 @app.route("/api/users")
 def get_users():
