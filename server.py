@@ -20,7 +20,7 @@ jwt = JWTManager(app)
 def root():
     """Show the main page"""
 
-    return render_template("base.html")
+    return render_template("index.html")
 
 @app.route("/api/users")
 def get_users():
@@ -48,7 +48,6 @@ def login():
             return jsonify({'status': 'ok', 'access_token': access_token})
     return jsonify({'status': 'ERROR', 'message': 'Username or passwor is not correct'})
 
-   
 
 if __name__ == '__main__':
     connect_to_db(app)
