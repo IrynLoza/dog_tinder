@@ -37,7 +37,7 @@ def get_users():
     result = []
     for user in users:
         result.append(user.serialize())
-  
+
     return jsonify(result)
 
 @app.route("/api/login", methods=['POST'])
@@ -55,14 +55,21 @@ def login():
             return jsonify({'status': 'ok', 'access_token': access_token})
     return jsonify({'status': 'ERROR', 'message': 'Username or passwor is not correct'})
 
+
 @app.route("/api/random-user")
 def get_random_user():
     """Get random user from database"""
+    
+    user_id = randint(1,102)
+    user = crud.get_user_by_id(user_id)
+    user_img = crud.get_user_img_by_id(user_id)
+    response = user.serialize()
+    response['user_img'] = user_img.serialize()
+    # result = []
+    # for user in users:
+    #     result.append(user.serialize())
 
-    random_user = choice(crud.get_users())
-    result = random_user.serialize()
-  
-    return jsonify(result)
+    return jsonify(response)
 
 
 
