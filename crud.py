@@ -1,4 +1,5 @@
 from model import db, User, Image, Like, Dislike, connect_to_db
+from random import choice, randint
 import requests
 import json
 
@@ -22,12 +23,20 @@ def get_users():
 
     return User.query.all()
 
+# def get_users_with_images():
+#     """Get all users with images"""
+
+#     return db.session.query(User, Image).join(Image).all()
+ 
 
 def get_user_by_id(user_id):
     """Get user object by id"""
 
     return User.query.get(user_id)
 
+def get_user_img_by_id(user_id):
+
+    return Image.query.get(user_id)
 
 def get_user_by_user_name(user_name):
     """Get user object by user name"""
