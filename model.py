@@ -37,11 +37,27 @@ class User(db.Model):
     owner = db.relationship('Dislike', backref='dislike_owner_id', foreign_keys = 'Dislike.user_id')
     target = db.relationship('Dislike', backref='dislike_target_id', foreign_keys = 'Dislike.target_user_id')
    
-
+    def serialize(self):
+        return {
+            'user_id': self.user_id,
+            'user_name': self.user_name,
+            'email': self.email,
+            'breed': self.breed,
+            'summary': self.summary,
+        }
 
     def __repr__(self):
         return f'<User id={self.user_id} name={self.user_name} email={self.email} breed={self.breed}>' 
-       
+
+###MAIN USER
+#create_user('cake', 'test', 'cake@gmail.com', 'pembroke', '95134', 'male', 
+# 'Love food, offleash parks, puzzle games and play with dogs', 
+# 'Looking for crazy friend to have fun together. Obsessed with pugs') 
+# 
+# file:///Users/iryna/Desktop/49761386_2380090165608886_1781921681309171712_o.jpg
+# file:///Users/iryna/Desktop/51998016_2403675836583652_5566758772212236288_o.jpg
+# file:///Users/iryna/Desktop/42968223_2308724572745446_7582145602897575936_o.jpg        
+
 
 class Image(db.Model):
     """A user images."""
@@ -62,7 +78,9 @@ class Image(db.Model):
     def __repr__(self):
         return f'<Image id={self.image_id} url={self.image_url}>' 
 
-# test1 = User(user_name='ted', password='test', email='test@gmail.com')       
+    def serialize(self):
+        return self.image_url
+      
 
 class Like(db.Model):
     """A user likes."""
