@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, session, redirect, jso
 from flask_jwt_extended import JWTManager, create_access_token
 
 from model import connect_to_db
+from random import choice, randint
 
 import json
 import crud
@@ -25,8 +26,8 @@ jwt = JWTManager(app)
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    
     return render_template('index.html')
+
 
 @app.route("/api/users")
 def get_users():
@@ -53,6 +54,17 @@ def login():
             access_token = create_access_token(identity = {'user_name': user.user_name, 'user_id': user.user_id})
             return jsonify({'status': 'ok', 'access_token': access_token})
     return jsonify({'status': 'ERROR', 'message': 'Username or passwor is not correct'})
+
+@app.route("/api/random-user")
+def get_random_user():
+    """Get random user from database"""
+
+    random_user = choice(crud.get_users())
+    result = random_user.serialize()
+  
+    return jsonify(result)
+
+
 
 
 if __name__ == '__main__':
