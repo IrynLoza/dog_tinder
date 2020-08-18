@@ -17,11 +17,6 @@ app.jinja_env.undefined = StrictUndefined
 
 jwt = JWTManager(app)
 
-# @app.route("/")
-# def root():
-#     """Show the main page"""
-
-#     return render_template("index.html")
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -59,7 +54,7 @@ def login():
 @app.route("/api/random-user")
 def get_random_user():
     """Get random user from database"""
-    
+
     user_id = randint(1,102)
     user = crud.get_user_by_id(user_id)
     user_img = crud.get_user_img_by_id(user_id)
@@ -71,6 +66,30 @@ def get_random_user():
 
     return jsonify(response)
 
+
+@app.route("/api/like", methods=['POST']) 
+def get_likes():
+    """Get likes from current user"""  
+    data = request.get_json()
+
+    target_id = data['target_id']
+    current_user_id = session['user']['user_id']
+
+    like = crud.create_like(current_user_id, target_id)
+  
+    return jsonify({'status': 'ok'})
+
+@app.route("/api/dislike", methods=['POST']) 
+def get_dislikes():
+    """Get dislikes from current user"""  
+    data = request.get_json()
+
+    target_id = data['target_id']
+    current_user_id = session['user']['user_id']
+
+    dislike = crud.create_dislike(current_user_id, target_id)
+   
+    return jsonify({'status': 'ok'})
 
 
 

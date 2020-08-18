@@ -1,14 +1,6 @@
 'use strict';
 
-// const { func } = require("prop-types");
-
-// document.onload(function(){
-//  
-
-// })
-
 const Router = ReactRouterDOM.BrowserRouter;
-// const Router = ReactRouterDOM.HashRouter;
 const Route = ReactRouterDOM.Route;
 const Link = ReactRouterDOM.Link;
 const Prompt = ReactRouterDOM.Prompt;
@@ -98,7 +90,7 @@ function HeaderNavigation() {
                         <Link to="/user-profile"> Profile </Link>
                     </li>
                     <li>
-                        <Link to="/matches"> Matches </Link>
+                        <Link to="/users"> Users </Link>
                     </li>
                     <li>
                         <Link to="/chat"> Chat </Link>
@@ -116,9 +108,86 @@ function UserProfile() {
     return <div> User Profile </div>
 }
 
-function Matches() {
-    return <div> List of mathes </div>
+function Users() {
+    
+    const [image, setImage] = React.useState('')
+    const [name, setName] = React.useState('')
+    const [summary, setSummary] = React.useState('')
+    const [target_id, setTarget] = React.useState('');
+
+    function getRandomUser() {
+        fetch('/api/random-user')
+        .then(response => response.json())
+        .then((data) => {
+            console.log(data)
+            setImage(data.user_img)
+            setName(data.user_name)
+            setSummary(data.summary)
+            setTarget(data.user_id)
+        })
+    }
+
+    React.useEffect(() => {       
+       getRandomUser()
+      }, [])
+
+    function like() {
+     
+        fetch('/api/like', {
+            method: 'POST', 
+            body: JSON.stringify({target_id}),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'ok'){
+            console.log('Likes happend!!!')
+            getRandomUser()
+
+            } else {
+                console.log(data.message);
+            }
+
+        })
+    }
+
+    function dislike() {
+     
+        fetch('/api/dislike', {
+            method: 'POST', 
+            body: JSON.stringify({target_id}),
+            headers: {
+                'Content-Type': 'application/json'
+                //autefication - key from localStorage
+                //fetch get and fetch POST in different functions
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === 'ok'){
+            console.log('Dislike happend!!!')
+            getRandomUser()
+
+            } else {
+                console.log(data.message);
+            }
+
+        })
+    }
+
+
+    return (<div> 
+            <img src={image}></img>
+            <div>Name: {name}</div> 
+            <div>Summary: {summary}</div> 
+            <button name="dislike" onClick={dislike}> Next </button>
+            <button name="like" onClick={like}> Like </button>
+            </div>
+            );
 }
+
 
 function Chat() {
     return <div> Chat </div>
@@ -134,7 +203,7 @@ function PrivateRoute(){
     return (
         <div>
             <Route path="/chat"><Chat /></Route>
-            <Route path="/matches"><Matches /></Route>
+            <Route path="/users"><Users /></Route>
             <Route path="/user-profile"><UserProfile /></Route>
         </div>
     );
