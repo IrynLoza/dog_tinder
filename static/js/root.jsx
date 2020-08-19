@@ -9,6 +9,8 @@ const Redirect = ReactRouterDOM.Redirect;
 const useLocation = ReactRouterDOM.useLocation;
 const useHistory = ReactRouterDOM.useHistory;
 
+
+
 function Logout(){
     const history = useHistory();
     
@@ -37,6 +39,7 @@ function Login(props) {
     
         console.log('userName', userName)
         console.log('password', password)
+
 
         fetch('/api/login', {
             method: 'POST', 
@@ -116,8 +119,7 @@ function Users() {
     const [target_id, setTarget] = React.useState('');
 
     function getRandomUser() {
-        fetch('/api/random-user')
-        .then(response => response.json())
+        request({method: 'GET', path: '/api/random-user'})
         .then((data) => {
             console.log(data)
             setImage(data.user_img)
@@ -132,15 +134,7 @@ function Users() {
       }, [])
 
     function like() {
-     
-        fetch('/api/like', {
-            method: 'POST', 
-            body: JSON.stringify({target_id}),
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        })
-        .then(response => response.json())
+        request({method: 'POST', body: {target_id}, path: '/api/like'})
         .then(data => {
             if(data.status === 'ok'){
             console.log('Likes happend!!!')
@@ -154,17 +148,7 @@ function Users() {
     }
 
     function dislike() {
-     
-        fetch('/api/dislike', {
-            method: 'POST', 
-            body: JSON.stringify({target_id}),
-            headers: {
-                'Content-Type': 'application/json'
-                //autefication - key from localStorage
-                //fetch get and fetch POST in different functions
-            },
-        })
-        .then(response => response.json())
+        request({method: 'POST', body: {target_id}, path: '/api/dislike'})
         .then(data => {
             if(data.status === 'ok'){
             console.log('Dislike happend!!!')
@@ -208,6 +192,29 @@ function PrivateRoute(){
         </div>
     );
 
+}
+
+function request({method, body, path}) {
+    return fetch(path, {
+        method, 
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('session-key')}`
+        },
+    })
+    .then(response => { 
+        if(response.status !== 200) {
+            throw new Error(response.status);
+        }
+       return response.json();
+    })
+    .catch(error => {
+        if(error.message === "401"){
+            localStorage.removeItem('session-key');
+            window.location.replace('/');
+        }
+    })
 }
 
 function App() {
