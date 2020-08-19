@@ -31,11 +31,14 @@ class User(db.Model):
     summary = db.Column(db.Text)
     preferences = db.Column(db.Text)
 
-    owner = db.relationship('Like', backref='owner_id', foreign_keys = 'Like.user_id')
-    target = db.relationship('Like', backref='target_id', foreign_keys = 'Like.target_user_id')
+    like_owner = db.relationship('Like', backref='owner_id', foreign_keys = 'Like.user_id')
+    like_target = db.relationship('Like', backref='target_id', foreign_keys = 'Like.target_user_id')
 
-    owner = db.relationship('Dislike', backref='dislike_owner_id', foreign_keys = 'Dislike.user_id')
-    target = db.relationship('Dislike', backref='dislike_target_id', foreign_keys = 'Dislike.target_user_id')
+    dislike_owner = db.relationship('Dislike', backref='dislike_owner_id', foreign_keys = 'Dislike.user_id')
+    dislike_target = db.relationship('Dislike', backref='dislike_target_id', foreign_keys = 'Dislike.target_user_id')
+
+    match_owner = db.relationship('Match', backref='match_owner_id', foreign_keys = 'Match.user_id')
+    match_target = db.relationship('Match', backref='match_target_id', foreign_keys = 'Match.target_user_id')
    
     def serialize(self):
         return {
@@ -74,13 +77,12 @@ class Image(db.Model):
 
     user = db.relationship('User', backref='images')
     
+    def serialize(self):
+        return self.image_url
 
     def __repr__(self):
         return f'<Image id={self.image_id} url={self.image_url}>' 
 
-    def serialize(self):
-        return self.image_url
-      
 
 class Like(db.Model):
     """A user likes."""
@@ -94,9 +96,8 @@ class Like(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     target_user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
-
     def __repr__(self):
-        return f'<Like id={self.like_id}>' 
+        return f'<Like id={self.like_id} target user id={self.target_user_id}>' 
 
 class Dislike(db.Model):
     """A user dislikes."""
@@ -114,7 +115,23 @@ class Dislike(db.Model):
 
     def __repr__(self):
         return f'<Dislike id={self.dislike_id}>' 
- 
+
+
+class Match(db.Model):
+    """A chat."""
+
+    __tablename__ = "matches"
+
+    match_id = db.Column(db.Integer,
+                        autoincrement=True,
+                        primary_key=True)  
+    
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    target_user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+
+
+    def __repr__(self):
+        return f'<Match id={self.match_id} target user id={self.target_user_id}>' 
 
 
 if __name__ == '__main__':
