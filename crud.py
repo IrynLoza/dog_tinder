@@ -1,4 +1,4 @@
-from model import db, User, Image, Like, Dislike, connect_to_db
+from model import db, User, Image, Like, Dislike, Match, connect_to_db
 from random import choice, randint
 import requests
 import json
@@ -22,6 +22,13 @@ def get_users():
     """Get all users objects"""
 
     return User.query.all()
+
+
+def get_user_by_ids(id_list):
+    """Get users"""
+    # in - method get the list of id
+    return db.session.query(User).filter(User.user_id.in_(id_list)).all()
+# 
 
 # def get_users_with_images():
 #     """Get all users with images"""
@@ -105,6 +112,11 @@ def get_likes_by_user(user_id):
     """Get and return likes by user"""
 
     return Like.query.filter(Like.user_id == user_id).all()
+
+def get_likes_by_target_id(user_id, target_user_id):
+    """Get and return likes by user"""
+
+    return Like.query.filter((Like.user_id == user_id) | (Like.target_user_id == user_id)).all()    
    
 
 #***CREATE DISLIKE AND GET DISLIKE DATA***
@@ -130,6 +142,22 @@ def get_dislikes_by_user(user_id):
     
     return Dislike.query.filter(Dislike.user_id == user_id).all()
 
+
+#***CREATE MATCH AND GET MATCH DATA***
+def create_match(user_id, target_user_id):
+    """Create and return a chat.""" 
+
+    match = Match(user_id=user_id, target_user_id=target_user_id)
+
+    db.session.add(match)
+    db.session.commit()
+
+    return match
+
+def get_matches(user_id):
+    """Get chats"""
+
+    return Match.query.filter((Match.user_id == user_id) | (Match.target_user_id == user_id)).all()    
 
 
 
