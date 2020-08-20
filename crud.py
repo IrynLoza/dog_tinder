@@ -43,7 +43,7 @@ def get_user_by_id(user_id):
 
 def get_user_img_by_id(user_id):
 
-    return Image.query.get(user_id)
+    return Image.query.filter(Image.user_id == user_id).first()
 
 def get_user_by_user_name(user_name):
     """Get user object by user name"""
