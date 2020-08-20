@@ -46,6 +46,8 @@ class User(db.Model):
             'user_name': self.user_name,
             'email': self.email,
             'breed': self.breed,
+            'location': self.location,
+            'gender': self.gender,
             'summary': self.summary,
         }
 
