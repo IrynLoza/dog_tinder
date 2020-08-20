@@ -96,7 +96,7 @@ function HeaderNavigation() {
                         <Link to="/users"> Users </Link>
                     </li>
                     <li>
-                        <Link to="/chat"> Chat </Link>
+                        <Link to="/matches"> Matches </Link>
                     </li>
                     <li>
                         <Logout />
@@ -108,7 +108,38 @@ function HeaderNavigation() {
 }
 
 function UserProfile() {
-    return <div> User Profile </div>
+
+    return (
+        <div> 
+            <img src="/static/images/cake.jpg"></img>
+            <br></br>
+            Update photo
+            <input type="file" accept="image/*, image/heic, image/heif"></input>
+            <div>User name: </div>
+            <br></br>
+            <label>Choose a breed:</label>
+                <select id="breeds" name="breeds" size="2" multiple>
+                    <option value="pembroke">Corgi</option>
+                    <option value="pug">Pug</option>
+                </select>
+                <br></br>    
+            <input type="radio" id="male" name="gender" value="male"></input>
+            <label htmlFor="male">Male</label>
+
+            <input type="radio" id="female" name="gender" value="female"></input>
+            <label htmlFor="female">Female</label> 
+            <br></br>
+            Location:
+            <br></br>
+            Email:
+            <br></br>      
+            Summary:
+            <textarea></textarea> 
+            <br></br>      
+            Preferences:
+            <textarea></textarea>  
+        </div>
+    );
 }
 
 function Users() {
@@ -161,7 +192,6 @@ function Users() {
         })
     }
 
-
     return (<div> 
             <img src={image}></img>
             <div>Name: {name}</div> 
@@ -173,10 +203,93 @@ function Users() {
 }
 
 
-function Chat() {
-    return <div> Chat </div>
+function User(props) {
+    const {match} = props
+    const history = useHistory();
+
+    function userDetail() {
+        console.log('===> userDetails', match);
+        history.push(`/matches/${match.user_id}`);
+    }
+
+    return (
+        <li onClick={userDetail}>
+            <img src={match.user_img}></img>
+            <div>Name: {match.user_name}</div>
+            <div>Summary: {match.summary}</div>
+        </li>
+      )
+    } 
+
+function UserList(props) {
+    const matches = props.matches
+  
+    return (    
+        <ul>
+            {matches.map((match, index) => {
+                return <User match={match} key={index}/>
+            })}
+        </ul>
+    )
+
 }
 
+function Matches() {
+
+    const [matches, setMatches] = React.useState('')
+   
+    function getMatchUser() {
+        request({method: 'GET', path: '/api/matches'})
+        .then((data) => {
+            console.log(data)
+            setMatches(data)
+        })
+    }
+
+    React.useEffect(() => {       
+       getMatchUser()
+      }, [])
+
+    if(matches.length) {
+        return (
+            <div> 
+               <UserList matches={matches}/> 
+            </div>
+    );                
+    } 
+    return <div>Loading...</div>
+}
+
+function UserDetail(props){
+
+    const userId = props.match.params.id
+    const [user, setUser] = React.useState('')
+
+    function getUserDetails() {
+        request({method: 'GET', path: `/api/users/${userId}`})
+        .then((data) => {
+            setUser(data)
+        })  
+    }
+
+    React.useEffect(() => {       
+        getUserDetails()
+       }, [])
+    
+    
+
+    return (
+        <div>
+        <img src={user.user_img}></img>
+        <div>Name: {user.user_name}</div>
+        <div>Breed: {user.breed}</div>
+        <div>Gender: {user.gender}</div>
+        <div>Email: {user.email}</div>
+        <div>Location: {user.location}</div>
+        <div>Summary: {user.summary}</div>
+        </div>
+    );
+}
 
 function PrivateRoute(){
     const sessionKey = localStorage.getItem('session-key');
@@ -186,7 +299,8 @@ function PrivateRoute(){
     }
     return (
         <div>
-            <Route path="/chat"><Chat /></Route>
+            <Route exact path="/matches"><Matches /></Route>
+            <Route path="/matches/:id" render={routeProps => <UserDetail {...routeProps}/>} />
             <Route path="/users"><Users /></Route>
             <Route path="/user-profile"><UserProfile /></Route>
         </div>

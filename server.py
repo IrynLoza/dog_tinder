@@ -152,7 +152,18 @@ def get_match():
 
     return jsonify(result) 
 
+@app.route("/api/users/<user_id>")
+@jwt_required
+def get_user_by_id(user_id):
+    """"""
 
+    user = (crud.get_user_by_id(user_id)).serialize()
+    user_img = crud.get_user_img_by_id(user_id)
+    user['user_img'] = user_img.serialize()
+
+    return jsonify(user)
+  
+    
 if __name__ == '__main__':
     connect_to_db(app)
     app.run(host='0.0.0.0', debug=True)
