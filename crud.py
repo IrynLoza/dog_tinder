@@ -17,6 +17,23 @@ def create_user(user_name, password, email, breed, location, gender,
 
     return user
 
+def update_user_by_id(id, data):
+    """"""
+
+    updated_user = db.session.query(User).filter(User.user_id == id)\
+       .update({
+           User.user_name: data['user_name'], 
+           User.summary: data['summary'],
+           User.email: data['email'],
+           User.breed: data['breed'],
+           User.location: data['location'],
+           User.preferences: data['preferences']
+       })
+    
+    db.session.commit()
+
+    return updated_user    
+
 
 def get_users():
     """Get all users objects"""
@@ -28,13 +45,7 @@ def get_user_by_ids(id_list):
     """Get users"""
     # in - method get the list of id
     return db.session.query(User).filter(User.user_id.in_(id_list)).all()
-# 
 
-# def get_users_with_images():
-#     """Get all users with images"""
-
-#     return db.session.query(User, Image).join(Image).all()
- 
 
 def get_user_by_id(user_id):
     """Get user object by id"""
@@ -56,7 +67,7 @@ def get_user_by_email(email):
 
     return User.query.filter(User.email == email).one() 
 
-
+ 
 def get_breeds():
     """Get and return all breeds from API"""
 
@@ -89,6 +100,16 @@ def get_random_image_by_breed(breed):
     imgs_url = json.loads(requests.get(f'https://dog.ceo/api/breed/{breed}/images/random').content)
     
     return imgs_url['message']   
+
+def update_image_by_id(image_id, url):
+    """"""
+    
+    new_image = db.session.query(Image).filter(Image.image_id == image_id)\
+       .update({Image.image_url: url})
+    
+    db.session.commit()
+
+    return new_image
 
 
 #***CREATE LIKE AND GET LIKE DATA***
