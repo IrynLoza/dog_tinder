@@ -109,35 +109,68 @@ function HeaderNavigation() {
 
 function UserProfile() {
 
-    return (
-        <div> 
-            <img src="/static/images/cake.jpg"></img>
-            <br></br>
-            Update photo
-            <input type="file" accept="image/*, image/heic, image/heif"></input>
-            <div>User name: </div>
-            <br></br>
-            <label>Choose a breed:</label>
-                <select id="breeds" name="breeds" size="2" multiple>
-                    <option value="pembroke">Corgi</option>
-                    <option value="pug">Pug</option>
-                </select>
-                <br></br>    
-            <input type="radio" id="male" name="gender" value="male"></input>
-            <label htmlFor="male">Male</label>
+    const [state, setState] = React.useState({})
 
-            <input type="radio" id="female" name="gender" value="female"></input>
-            <label htmlFor="female">Female</label> 
+    function handleChange(evt) {
+        console.log('eveveeeeent', evt.target)
+        const value = evt.target.value;
+        setState({
+            ...state,
+            [evt.target.name]: value
+        });
+    }
+
+    function getCurrentUser() {
+        request({method: 'GET', path: "/api/current-user"})
+        .then((data) => {
+            console.log(data)
+            setState(data)
+        }) 
+    }
+
+    React.useEffect(() => {
+        getCurrentUser()
+    }, [])
+
+    function handleClick(){
+        request({method: "PUT", body: state, path: "/api/update/profile"})
+        .then((data) => {
+            console.log('data from handleClick', data)
+        })
+    }
+
+    return (
+        <div onChange={handleChange}> 
+            <img src={state.user_img}></img>
             <br></br>
-            Location:
+            <label>Update photo:</label>
+            <input type="text" name="user_img" defaultValue={state.user_img}></input>
             <br></br>
-            Email:
+            <label>Username:</label>
+            <input type="text" name="user_name" defaultValue={state.user_name}></input>
+            <br></br>
+            <label>Breed:</label>
+            <input type="text" name="breed" defaultValue={state.breed}></input>
+            <br></br>    
+            <input type="radio" id="male" name="gender"></input>
+            <label htmlFor="male" defaultChecked>Male</label>
+
+            <input type="radio" id="female" name="gender"></input>
+            <label htmlFor="gender">Female</label> 
+            <br></br>
+            <label htmlFor="gender">Location:</label>
+            <input type="text" name="location" defaultValue={state.location}></input>
+            <br></br>
+            <label>Email:</label>
+            <input type="text" name="email" defaultValue={state.email}></input>
             <br></br>      
             Summary:
-            <textarea></textarea> 
+            <textarea name="summary" defaultValue={state.summary}></textarea> 
             <br></br>      
             Preferences:
-            <textarea></textarea>  
+            <textarea name="preferences" defaultValue={state.preferences}></textarea>
+            <br></br> 
+            <button name="save" onClick={handleClick}> Save changes </button>  
         </div>
     );
 }
@@ -349,5 +382,3 @@ function App() {
 ReactDOM.render(<App />, document.getElementById('root'))
 
 
-{/* <Route path="users/:id" component={Users} /> */}
-{/* <Redirect to="/"/> */}

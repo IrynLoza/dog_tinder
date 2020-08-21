@@ -42,7 +42,7 @@ def login():
     if user:
         if user.password == data['password']:
             session['user'] = {'user_name': user.user_name, 'user_id': user.user_id}
-
+      
             #create access token for user 
             #use jwt (json web token) instead of cookies
             access_token = create_access_token(identity = {'user_name': user.user_name, 'user_id': user.user_id})
@@ -156,13 +156,40 @@ def get_match():
 @jwt_required
 def get_user_by_id(user_id):
     """"""
-
+   
     user = (crud.get_user_by_id(user_id)).serialize()
     user_img = crud.get_user_img_by_id(user_id)
     user['user_img'] = user_img.serialize()
 
     return jsonify(user)
-  
+
+@app.route("/api/current-user")  
+@jwt_required
+def get_current_user():
+
+    current_id = get_jwt_identity()['user_id']
+    user = crud.get_user_by_id(current_id).serialize()
+    user_img = crud.get_user_img_by_id(current_id)
+    user['user_img'] = user_img.serialize()
+    print(user)
+
+    return jsonify(user)
+
+#PUT - method for update
+@app.route("/api/update/profile", methods=["PUT"]) 
+@jwt_required
+def update_profile():
+
+    data = request.get_json()
+    current_id = get_jwt_identity()['user_id']
+    crud.update_user_by_id(current_id, data)
+
+    try:
+        crud.update_user_by_id(current_id, data)
+    except:
+        return jsonify({'status': 'ERROR', 'message': 'user update'})
+
+    return jsonify({'status': 'ok', 'message': 'user successful updated'})
     
 if __name__ == '__main__':
     connect_to_db(app)
