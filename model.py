@@ -49,6 +49,7 @@ class User(db.Model):
             'location': self.location,
             'gender': self.gender,
             'summary': self.summary,
+            'preferences': self.preferences,
         }
 
     def __repr__(self):
