@@ -27,7 +27,7 @@ function Login(props) {
     const sessionKey = localStorage.getItem('session-key');
     const history = useHistory();
     if(sessionKey){
-        history.push("/user-profile");
+        history.push("/users");
     }
 
     const [userName, setName] = React.useState('');
@@ -270,23 +270,42 @@ function UserList(props) {
 function Matches() {
 
     const [matches, setMatches] = React.useState('')
+    const [pages, setPages] = React.useState([])
+
    
-    function getMatchUser() {
-        request({method: 'GET', path: '/api/matches'})
+    function getMatchUser(page) {
+        request({method: 'GET', path: `/api/matches?page=${page}`})
         .then((data) => {
             console.log(data)
-            setMatches(data)
+            setMatches(data.matches)
+
+            let arr = []
+            for (let i = 0; i < data.pages; i++) {
+                arr.push(i+1)
+            }
+            setPages(arr);
         })
     }
 
-    React.useEffect(() => {       
-       getMatchUser()
+    React.useEffect(() => { 
+
+       getMatchUser(1)
       }, [])
+
+    function changePage(event) {
+        const page = event.target.textContent
+        getMatchUser(page);
+    }  
 
     if(matches.length) {
         return (
             <div> 
                <UserList matches={matches}/> 
+               <div onClick={changePage}>
+                    {pages.map((el, index) => {
+                        return <div key={index}>{el}</div>
+                    })}
+                </div> 
             </div>
     );                
     } 
@@ -296,7 +315,7 @@ function Matches() {
 function UserDetail(props){
 
     const userId = props.match.params.id
-    const [user, setUser] = React.useState('')
+    const [user, setUser] = React.useState({user_img: []})
 
     function getUserDetails() {
         request({method: 'GET', path: `/api/users/${userId}`})
@@ -313,7 +332,9 @@ function UserDetail(props){
 
     return (
         <div>
-        <img src={user.user_img}></img>
+        { user.user_img.map((img, index)=> {
+            return <img key={index} src={img}></img>
+        })}
         <div>Name: {user.user_name}</div>
         <div>Breed: {user.breed}</div>
         <div>Gender: {user.gender}</div>

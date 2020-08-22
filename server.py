@@ -127,7 +127,7 @@ def get_match():
 
     #get all matches for current user
     matches_list = crud.get_matches(current_id)
-    
+    query_page = request.args.get('page')
     #create unique list with current user matches
     #if current user = match.user_id = add data to target_user_id column
     #else opposite 
@@ -148,9 +148,20 @@ def get_match():
         user = match.serialize()
         user['user_img'] = user_img.serialize()
         result.append(user)
+    
+    print(query_page)
+    page = int(query_page) - 1
+    limit = 10
+    offset = 0
+    end = limit + offset
+    if page > 0:
+        limit = 10
+        offset = page * limit
+        end = limit + offset
 
+    counted_pages = round(len(result) / limit)
 
-    return jsonify(result) 
+    return jsonify({'matches': result[offset:end], 'pages': counted_pages}) 
 
 @app.route("/api/users/<user_id>")
 @jwt_required
@@ -158,8 +169,10 @@ def get_user_by_id(user_id):
     """"""
    
     user = (crud.get_user_by_id(user_id)).serialize()
-    user_img = crud.get_user_img_by_id(user_id)
-    user['user_img'] = user_img.serialize()
+    user_imgs = crud.get_user_imgs_by_id(user_id)
+    user['user_img'] = []
+    for img in user_imgs:
+        user['user_img'].append(img.serialize())
 
     return jsonify(user)
 
