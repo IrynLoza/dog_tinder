@@ -56,6 +56,10 @@ def get_user_img_by_id(user_id):
 
     return Image.query.filter(Image.user_id == user_id).first()
 
+def get_user_imgs_by_id(user_id):
+
+    return Image.query.filter(Image.user_id == user_id).all()
+
 def get_user_by_user_name(user_name):
     """Get user object by user name"""
 
@@ -178,7 +182,7 @@ def create_match(user_id, target_user_id):
 def get_matches(user_id):
     """Get chats"""
 
-    return Match.query.filter((Match.user_id == user_id) | (Match.target_user_id == user_id)).all()    
+    return Match.query.filter((Match.user_id == user_id) | (Match.target_user_id == user_id)).all() 
 
 
 
