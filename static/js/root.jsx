@@ -8,6 +8,8 @@ const Switch = ReactRouterDOM.Switch;
 const Redirect = ReactRouterDOM.Redirect;
 const useLocation = ReactRouterDOM.useLocation;
 const useHistory = ReactRouterDOM.useHistory;
+const { Badge, Button, Col, Carousel, Image, Container, Form, FormControl, ListGroup, Navbar, Nav, Row, Table } = ReactBootstrap;
+
 
 
 
@@ -53,7 +55,7 @@ function Login(props) {
             if(data.status === 'ok'){
                 // browser api for store access_token in local storage
                 localStorage.setItem('session-key', data.access_token);
-                history.push("/user-profile");
+                history.push("/users");
                 console.log('key', localStorage.getItem('session-key'))
 
             } else {
@@ -68,44 +70,46 @@ function Login(props) {
                 <p> Bring more fun to you fluffy friend life! </p>
                 {/* *** The main image should be here *** */}
                 {/* <img src="/static/images/main.png"></img> */}
-                <form> 
-                <label>Username</label>
-                <input type="text" name="username" onChange={e => setName(e.target.value)}></input>
+                <Form>
+                <Form.Label>Username</Form.Label>
+                <Form.Control type="text" name="username" onChange={e => setName(e.target.value)}></Form.Control>
 
-                <label>Password</label>
-                <input type="password" name="password" onChange={e => setPassword(e.target.value)}></input>
-                <button name="log_in" onClick={login}> Log in </button>
-                <button name="sing_in"> Sing in </button>
-                </form>
+                <Form.Label>Password</Form.Label>
+                <Form.Control type="password" name="password" onChange={e => setPassword(e.target.value)}></Form.Control>
+                <br></br>
+                <Button className="menu" name="log_in" onClick={login}> Log in </Button>
+                <Button className="menu" name="sing_in"> Sing in </Button>
+                </Form>
             </div>
     );
     
 }
 
+
 function HeaderNavigation() {
+    // const logo = "/static/images/logo.jpg";
     const location = useLocation();
     if (location.pathname === '/') return null;
     return (
-        <div>
-            <nav>
-                <ul>
-                    <li>
-                        <Link to="/user-profile"> Profile </Link>
-                    </li>
-                    <li>
-                        <Link to="/users"> Users </Link>
-                    </li>
-                    <li>
-                        <Link to="/matches"> Matches </Link>
-                    </li>
-                    <li>
-                        <Logout />
-                    </li>
-                </ul>
-            </nav>
-        </div>
+
+        <Navbar bg="primary" variant="dark">
+        <Navbar.Brand href="/">Dog<span className="brand">Tinder</span></Navbar.Brand>
+        <Nav className="mr-auto">
+          <Nav.Link href="/user-profile">Profile</Nav.Link>
+          <Nav.Link href="/users">Users</Nav.Link>
+          <Nav.Link href="/matches">Matches</Nav.Link>
+        </Nav>
+          <Button variant="outline-light"><Logout /></Button>
+      </Navbar>
+    
+
+
+
+
+           
     );
 }
+
 
 function UserProfile() {
 
@@ -141,7 +145,7 @@ function UserProfile() {
 
     return (
         <div onChange={handleChange}> 
-            <img src={state.user_img}></img>
+            <Image src={state.user_img} thumbnail></Image>
             <br></br>
             <label>Update photo:</label>
             <input type="text" name="user_img" defaultValue={state.user_img}></input>
@@ -164,10 +168,10 @@ function UserProfile() {
             <label>Email:</label>
             <input type="text" name="email" defaultValue={state.email}></input>
             <br></br>      
-            Summary:
+            <label>Summary:</label>
             <textarea name="summary" defaultValue={state.summary}></textarea> 
             <br></br>      
-            Preferences:
+            <label>Preferences:</label>
             <textarea name="preferences" defaultValue={state.preferences}></textarea>
             <br></br> 
             <button name="save" onClick={handleClick}> Save changes </button>  
@@ -306,6 +310,7 @@ function Matches() {
                         return <div key={index}>{el}</div>
                     })}
                 </div> 
+                <Button href="/chat"> Chat </Button>
             </div>
     );                
     } 
@@ -332,9 +337,15 @@ function UserDetail(props){
 
     return (
         <div>
-        { user.user_img.map((img, index)=> {
-            return <img key={index} src={img}></img>
-        })}
+              <Carousel>
+            { user.user_img.map((img, index)=> {
+                return (
+                        <Carousel.Item key={index}>
+                            <img className="d-block w-100" src={img} alt={`First ${index}`}></img>
+                        </Carousel.Item>
+                )
+            })} 
+            </Carousel>
         <div>Name: {user.user_name}</div>
         <div>Breed: {user.breed}</div>
         <div>Gender: {user.gender}</div>
@@ -344,6 +355,7 @@ function UserDetail(props){
         </div>
     );
 }
+
 
 function PrivateRoute(){
     const sessionKey = localStorage.getItem('session-key');
@@ -390,11 +402,20 @@ function App() {
         <Router>
             <div>
                 <HeaderNavigation />
-                <Switch>
-                    {/* exact show the main route */}
-                    <Route exact path="/"><Login /></Route> 
-                    <PrivateRoute />
-                </Switch>
+                <Container className="margin-top-20">
+                    <Row>
+                    <Col xs={12} md={6}>
+                    <Switch>
+                            {/* exact show the main route */}
+                            <Route exact path="/"><Login /></Route>
+                            <PrivateRoute />
+                        </Switch>
+                    </Col>
+                 
+                    </Row>
+
+                </Container>
+
             </div>
         </Router>
     );
