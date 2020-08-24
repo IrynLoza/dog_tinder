@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
+from flask_socketio import SocketIO, send, emit, join_room
 
 from model import connect_to_db
 from random import choice, randint
@@ -8,14 +9,17 @@ import json
 import crud
 import os
 
-from jinja2 import StrictUndefined
-
 app = Flask(__name__)
 app.secret_key = 'dev'
 app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']
-app.jinja_env.undefined = StrictUndefined
+
 
 jwt = JWTManager(app)
+
+#Create server using socket and fix cors errors
+socketIo = SocketIO(app, cors_allowed_origins="*") #????
+
+
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
