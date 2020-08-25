@@ -1,0 +1,48 @@
+.margin-top-20 {
+    margin-top: 20px;
+}
+
+.brand {
+    font-size: 10px;
+    position: relative;
+    top: -12px;
+}
+
+logout {
+    cursor: pointer;
+    color: #173F5F;
+}
+
+ul {
+list-style-type: none;
+}
+
+
+img {
+    height: 300px;
+    position:relative;
+    overflow:hidden;
+}
+
+.pagination {
+    justify-content: center;
+}
+
+label {
+    color: darkblue;
+    font-family: sans-serif;
+}
+
+.login-lable {
+    color: #212529;
+}
+
+h1 {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+p {
+        font-family: sans-serif;
+        text-align: center;
+}
