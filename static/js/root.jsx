@@ -11,7 +11,7 @@ const useHistory = ReactRouterDOM.useHistory;
 const { Badge, Button, ToggleButtonGroup, ToggleButton, Pagination, Col, Carousel, Image, Container, Form, FormControl, ListGroup, Navbar, Card, Nav, Row, Table } = ReactBootstrap;
 
 
-
+//********LOG IN / LOG OUT*****/
 
 function Logout() {
     const history = useHistory();
@@ -56,8 +56,7 @@ function Login(props) {
                     // browser api for store access_token in local storage
                     localStorage.setItem('session-key', data.access_token);
                     history.push("/users");
-                    console.log('key', localStorage.getItem('session-key'))
-
+                    console.log('key', localStorage.getItem('session-key'));
                 } else {
                     console.log(data.message);
                     alert('Invalid Email or Password')
@@ -77,7 +76,7 @@ function Login(props) {
             <Form.Label className="login-lable">Password</Form.Label>
             <Form.Control type="password" name="password" onChange={e => setPassword(e.target.value)}></Form.Control>
             <br></br>
-            <Button variant="outline-primary" name="log_in" onClick={login}> Log in </Button>
+            <Button className="margin-right" variant="outline-primary" name="log_in" onClick={login}> Log in </Button>
             <Button variant="outline-primary" name="sing_in"> Sign in </Button>
         </Form>
     </div>
@@ -85,6 +84,8 @@ function Login(props) {
 
 }
 
+
+//*********NAV BAR******/
 
 function HeaderNavigation() {
     // const logo = "/static/images/logo.jpg";
@@ -101,15 +102,10 @@ function HeaderNavigation() {
             </Nav>
             <Button variant="outline-light"><Logout /></Button>
         </Navbar>
-
-
-
-
-
-
     );
 }
 
+//******CURRENT USER*******/
 
 function UserProfile() {
 
@@ -197,6 +193,9 @@ function UserProfile() {
     );
 }
 
+
+//*******FIND MATCH******/
+
 function Users() {
 
     const [image, setImage] = React.useState('')
@@ -247,13 +246,18 @@ function Users() {
             })
     }
 
-    return (<div>
-        <Image src={image} thumbnail></Image>
-        <div>Name: {name}</div>
-        <div>Summary: {summary}</div>
-        <Button variant="outline-primary" name="dislike" onClick={dislike}> Next </Button>
-        <Button variant="outline-primary" name="like" onClick={like}> Like </Button>
-    </div>
+    return (
+    <Row>
+   <Col sm={8}>
+        <Image className="img-custome item" src={image} thumbnail></Image>
+    </Col>
+    <Col sm={4}>
+    <div> <i className="fas fa-user"></i> {name}</div>
+    <div> Summary: {summary}</div>
+        <Button className="margin-right" variant="outline-warning" name="dislike" onClick={dislike}> <i className="far fa-meh"></i> </Button>
+        <Button variant="outline-success" name="like" onClick={like}> <i className="far fa-heart"></i> </Button>
+    </Col>
+    </Row>
     );
 }
 
@@ -270,8 +274,10 @@ function User(props) {
     return (
         <li onClick={userDetail}>
             <Image src={match.user_img} thumbnail></Image>
-            <div>Name: {match.user_name}</div>
-            <div>Summary: {match.summary}</div>
+            <div> <i className="fas fa-user"></i> {match.user_name}</div>
+            <div> {match.summary}</div>
+            <Button variant="outline-primary">Details</Button>
+            <br></br>
         </li>
     )
 }
@@ -339,8 +345,6 @@ function Matches() {
 }
 
 
-
-
 function UserDetail(props) {
 
     const userId = props.match.params.id
@@ -364,40 +368,26 @@ function UserDetail(props) {
             <Carousel>
                 {user.user_img.map((img, index) => {
                     return (
-                        <Carousel.Item key={index}>
+                        <Carousel.Item  key={index}>
                             <img className="d-block w-100" src={img} alt={`First ${index}`}></img>
                         </Carousel.Item>
                     )
                 })}
             </Carousel>
-            <Card body>Username: {user.user_name}</Card>
-            <Card body>Breed: {user.breed}</Card>
-            <Card body>Gender: {user.gender}</Card>
-            <Card body>Email: {user.email}</Card>
-            <Card body>Location: {user.location}</Card>
-            <Card body>Summary: {user.summary}</Card>
+            <br></br>
+            <div> <i className="fas fa-user"></i> {user.user_name}</div>
+            <div> <i className="fas fa-paw"></i> {user.breed}</div>
+            <div> <i className="fas fa-venus-mars"></i> {user.gender}</div>
+            <div> <i className="fas fa-envelope"></i> {user.email}</div>
+            <div> <i className="fas fa-map-pin"></i> {user.location}</div>
+            <div> {user.summary}</div>
             <Button variant="outline-primary" href="/chat"> New message </Button>
         </div>
     );
 }
 
 
-function PrivateRoute() {
-    const sessionKey = localStorage.getItem('session-key');
-    const history = useHistory();
-    if (!sessionKey) {
-        history.push("/");
-    }
-    return (
-        <div>
-            <Route exact path="/matches"><Matches /></Route>
-            <Route path="/matches/:id" render={routeProps => <UserDetail {...routeProps} />} />
-            <Route path="/users"><Users /></Route>
-            <Route path="/user-profile"><UserProfile /></Route>
-        </div>
-    );
-
-}
+//*******HANDLE FETCH******/
 
 function request({ method, body, path }) {
     return fetch(path, {
@@ -422,6 +412,82 @@ function request({ method, body, path }) {
         })
 }
 
+//********CHAT******/
+
+function Chat() {
+    let socket = io();
+    // socket.on('connect', function() {
+    //     socket.emit('message', {data: 'I\'m connected!'});
+    // });
+
+
+    // socket.on('cake', function(data){
+    //     console.log('Message from server', data);
+    //     const message = data.data;
+    //     const title = 'FOR CAKE'
+    //     toastr.info(message, title);
+    // })
+
+   
+    const [messages, setMessages] = React.useState([]);
+    const [message, setMessage] = React.useState("");
+    
+    socket.on("message", msg => {
+        setMessages([...messages, msg])});
+    
+    const onChange = (event) => {
+        setMessage(event.target.value);
+    };
+    
+    const onClick = () => {
+        if(message !== "") {
+            socket.emit("message", message);
+            setMessage("");
+        } else {
+            alert('Please, add message.')
+        }
+        
+    };
+    
+    return (
+        <div>
+            <h3>Welcome to the chat!</h3>
+        <div>
+            {messages.map((msg, index) => (<div key={index}><p>{msg}</p></div>))}
+        </div>
+        <p>
+            <Form.Control type="text" onChange={onChange} value={message} />
+        </p>
+        <p>
+            <Button type="button" onClick={onClick} value="Send">Send message</Button>
+        </p>
+        </div>
+    );
+    };
+
+ 
+//*******ROUTES**********/
+
+function PrivateRoute() {
+    const sessionKey = localStorage.getItem('session-key');
+    const history = useHistory();
+    if (!sessionKey) {
+        history.push("/");
+        return;
+    }
+
+    return (
+        <div>
+            <Route exact path="/matches"><Matches /></Route>
+            <Route path="/matches/:id" render={routeProps => <UserDetail {...routeProps} />} />
+            <Route path="/users"><Users /></Route>
+            <Route path="/user-profile"><UserProfile /></Route>
+            <Route path="/chat"><Chat /></Route>
+        </div>
+    );
+
+}
+
 function App() {
     return (
         <Router>
@@ -429,18 +495,15 @@ function App() {
                 <HeaderNavigation />
                 <Container className="margin-top-20">
                     <Row>
-                        <Col xs={12} md={6}>
+                        <Col>
                             <Switch>
                                 {/* exact show the main route */}
                                 <Route exact path="/"><Login /></Route>
                                 <PrivateRoute />
                             </Switch>
                         </Col>
-
                     </Row>
-
                 </Container>
-
             </div>
         </Router>
     );

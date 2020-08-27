@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
-from flask_socketio import SocketIO, send, emit, join_room
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 from model import connect_to_db
 from random import choice, randint
@@ -13,12 +13,11 @@ app = Flask(__name__)
 app.secret_key = 'dev'
 app.config['JWT_SECRET_KEY'] = os.environ['SECRET_KEY']
 
-
+#Create json web token
 jwt = JWTManager(app)
 
-#Create server using socket and fix cors errors
-socketIo = SocketIO(app, cors_allowed_origins="*") #????
-
+#Create server using socket 
+socketio = SocketIO(app) 
 
 
 @app.route('/', defaults={'path': ''})
@@ -207,7 +206,26 @@ def update_profile():
         return jsonify({'status': 'ERROR', 'message': 'user update'})
 
     return jsonify({'status': 'ok', 'message': 'user successful updated'})
-    
+
+#***CREATE CHAT***
+
+@socketio.on("message")
+def handleMessage(msg):
+    print(f'MessaGE====>{msg}')   
+    print(msg)
+    send(msg, broadcast=True)
+    # emit('cake', {'data': 'TEST MESSAGE FOR CAKE, Hello Cake!'})
+    return None
+
+# @socketio.on('join')
+# def on_join(data):
+#     user = data['user_name']
+#     print(f'===>>> data socket {user}')
+#     return    
+
+
 if __name__ == '__main__':
     connect_to_db(app)
-    app.run(host='0.0.0.0', debug=True)
+    #Use socket and Flask server together
+    socketio.run(app, host='0.0.0.0', debug=True)
+    # app.run(host='0.0.0.0', debug=True)
