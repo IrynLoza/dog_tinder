@@ -143,8 +143,8 @@ function UserProfile() {
 
     return (
         <div onChange={handleChange}>
-            <div className="image">
-                <Image className="image img" src={state.user_img} thumbnail></Image>
+            <div>
+                <Image className="img-item" src={state.user_img} thumbnail></Image>
             </div>
             <Form>
                 <label>Update photo</label>
@@ -248,10 +248,10 @@ function Users() {
 
     return (
     <Row>
-   <Col sm={8}>
-        <Image className="img-custome item" src={image} thumbnail></Image>
+   <Col>
+        <Image className="item" src={image} thumbnail></Image>
     </Col>
-    <Col sm={4}>
+    <Col>
     <div> <i className="fas fa-user"></i> {name}</div>
     <div> Summary: {summary}</div>
         <Button className="margin-right" variant="outline-warning" name="dislike" onClick={dislike}> <i className="far fa-meh"></i> </Button>
@@ -273,7 +273,7 @@ function User(props) {
 
     return (
         <li onClick={userDetail}>
-            <Image src={match.user_img} thumbnail></Image>
+            <Image className="img-item" src={match.user_img} thumbnail></Image>
             <div> <i className="fas fa-user"></i> {match.user_name}</div>
             <div> {match.summary}</div>
             <Button variant="outline-primary">Details</Button>
@@ -369,7 +369,7 @@ function UserDetail(props) {
                 {user.user_img.map((img, index) => {
                     return (
                         <Carousel.Item  key={index}>
-                            <img className="d-block w-100" src={img} alt={`First ${index}`}></img>
+                            <img className="img-item" src={img} alt={`First ${index}`}></img>
                         </Carousel.Item>
                     )
                 })}
@@ -416,18 +416,6 @@ function request({ method, body, path }) {
 
 function Chat() {
     let socket = io();
-    // socket.on('connect', function() {
-    //     socket.emit('message', {data: 'I\'m connected!'});
-    // });
-
-
-    // socket.on('cake', function(data){
-    //     console.log('Message from server', data);
-    //     const message = data.data;
-    //     const title = 'FOR CAKE'
-    //     toastr.info(message, title);
-    // })
-
    
     const [messages, setMessages] = React.useState([]);
     const [message, setMessage] = React.useState("");
@@ -495,13 +483,13 @@ function App() {
                 <HeaderNavigation />
                 <Container className="margin-top-20">
                     <Row>
-                        <Col>
+                        {/* <Col> */}
                             <Switch>
                                 {/* exact show the main route */}
                                 <Route exact path="/"><Login /></Route>
                                 <PrivateRoute />
                             </Switch>
-                        </Col>
+                        {/* </Col> */}
                     </Row>
                 </Container>
             </div>

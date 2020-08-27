@@ -8,7 +8,7 @@
     top: -12px;
 }
 
-logout {
+.logout {
     cursor: pointer;
     color: #173F5F;
 }
@@ -18,10 +18,16 @@ list-style-type: none;
 }
 
 
-img {
-    height: 300px;
+.img-item {
+    width: 400px;
     position:relative;
     overflow:hidden;
+    min-height: 300px;
+    max-height: 300px;
+    max-width: 400px;
+    height: auto;
+    margin: 3px;
+    padding: 3px;
 }
 
 .pagination {
@@ -37,7 +43,7 @@ label {
     color: #212529;
 }
 
-h1 {
+h1, h3 {
     font-family: sans-serif;
     text-align: center;
 }
@@ -46,3 +52,24 @@ p {
         font-family: sans-serif;
         text-align: center;
 }
+
+.margin-right {
+    margin-right: 10px;
+}
+
+.center {
+    margin: auto;
+    width: 50%;
+}
+
+.item {
+    width: 500px;
+    min-height: 400px;
+    max-height: 400px;
+    max-width: 500px;
+    height: auto;
+    margin: 3px;
+    padding: 3px;
+} 
+
+
