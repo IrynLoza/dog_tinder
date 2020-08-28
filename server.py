@@ -209,20 +209,26 @@ def update_profile():
 
 #***CREATE CHAT***
 
-@socketio.on("message")
-def handleMessage(msg):
-    print(f'MessaGE====>{msg}')   
-    print(msg)
-    send(msg, broadcast=True)
+
+@socketio.on("chat")
+def handleMessage(data):
+    print(f'MessaGE====>{data}')  
+    username = data['user']
+    room = data['room']
+    message = data['message']
+    
+    emit('message', username + ': ' + message, room=room)
+
     # emit('cake', {'data': 'TEST MESSAGE FOR CAKE, Hello Cake!'})
     return None
 
-# @socketio.on('join')
-# def on_join(data):
-#     user = data['user_name']
-#     print(f'===>>> data socket {user}')
-#     return    
-
+@socketio.on('join')
+def on_join(data):
+    print('JOIN==>')
+    username = data['user']
+    room = data['room']
+    join_room(room)
+    send(username + ' has entered the room.', room=room)
 
 if __name__ == '__main__':
     connect_to_db(app)

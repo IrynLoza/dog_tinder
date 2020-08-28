@@ -26,6 +26,7 @@ function Logout() {
 }
 
 function Login(props) {
+    console.log('here')
     const sessionKey = localStorage.getItem('session-key');
     const history = useHistory();
     if (sessionKey) {
@@ -55,6 +56,7 @@ function Login(props) {
                 if (data.status === 'ok') {
                     // browser api for store access_token in local storage
                     localStorage.setItem('session-key', data.access_token);
+                    localStorage.setItem('user', userName);
                     history.push("/users");
                     console.log('key', localStorage.getItem('session-key'));
                 } else {
@@ -108,7 +110,6 @@ function HeaderNavigation() {
 //******CURRENT USER*******/
 
 function UserProfile() {
-
     const [state, setState] = React.useState({})
 
     function handleChange(evt) {
@@ -278,6 +279,7 @@ function User(props) {
             <div> {match.summary}</div>
             <Button variant="outline-primary">Details</Button>
             <br></br>
+            <br></br>
         </li>
     )
 }
@@ -348,6 +350,8 @@ function Matches() {
 function UserDetail(props) {
 
     const userId = props.match.params.id
+
+
     const [user, setUser] = React.useState({ user_img: [] })
 
     function getUserDetails() {
@@ -381,7 +385,7 @@ function UserDetail(props) {
             <div> <i className="fas fa-envelope"></i> {user.email}</div>
             <div> <i className="fas fa-map-pin"></i> {user.location}</div>
             <div> {user.summary}</div>
-            <Button variant="outline-primary" href="/chat"> New message </Button>
+            <Button variant="outline-primary" href={`/chat/${userId}`}> New message </Button>
         </div>
     );
 }
@@ -414,49 +418,67 @@ function request({ method, body, path }) {
 
 //********CHAT******/
 
-function Chat() {
-    let socket = io();
-   
+function Chat(props) {
+    console.log('chat props', props)
+    let socket = props.socket;
+    const chatId = props.match.params.id
+
+
+    React.useEffect(()=>{
+        console.log('14')
+        socket.emit('join', {
+            room: chatId,
+            user: localStorage.getItem('user')
+        })
+    }, [])
+    // console.log('storage', localStorage.getItem('user_id'))
+
     const [messages, setMessages] = React.useState([]);
     const [message, setMessage] = React.useState("");
     
+    let count = 0;
     socket.on("message", msg => {
-        setMessages([...messages, msg])});
+        count++
+        setMessages([...messages, msg]);
+        console.log('arr==>', count);
+    });
     
-    const onChange = (event) => {
+    const onMessage = (event) => {
+        event.preventDefault();
         setMessage(event.target.value);
     };
     
+    const data = {
+        message,
+        room: chatId,
+        user: localStorage.getItem('user')
+    }
+
     const onClick = () => {
-        if(message !== "") {
-            socket.emit("message", message);
+        console.log('Clicked==>')
+        if(data.message !== "") {
+            socket.emit("chat", data);
             setMessage("");
         } else {
             alert('Please, add message.')
         }
-        
     };
     
     return (
         <div>
             <h3>Welcome to the chat!</h3>
-        <div>
-            {messages.map((msg, index) => (<div key={index}><p>{msg}</p></div>))}
-        </div>
-        <p>
-            <Form.Control type="text" onChange={onChange} value={message} />
-        </p>
-        <p>
-            <Button type="button" onClick={onClick} value="Send">Send message</Button>
-        </p>
+            <div>{messages.map((msg, index) => (<div key={index}><p>{msg}</p></div>))}</div>
+            <p><Form.Control type="text" onChange={onMessage} value={message} /></p>
+            <p><Button type="button" onClick={onClick} value="Send">Send message</Button> </p>
         </div>
     );
-    };
+};
 
  
 //*******ROUTES**********/
 
 function PrivateRoute() {
+    const socket = io()
     const sessionKey = localStorage.getItem('session-key');
     const history = useHistory();
     if (!sessionKey) {
@@ -469,8 +491,8 @@ function PrivateRoute() {
             <Route exact path="/matches"><Matches /></Route>
             <Route path="/matches/:id" render={routeProps => <UserDetail {...routeProps} />} />
             <Route path="/users"><Users /></Route>
-            <Route path="/user-profile"><UserProfile /></Route>
-            <Route path="/chat"><Chat /></Route>
+            <Route path="/user-profile"><UserProfile/></Route>
+            <Route path="/chat/:id" render={routeProps => <Chat socket={socket} {...routeProps} />} />
         </div>
     );
 
