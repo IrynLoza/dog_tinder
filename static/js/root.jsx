@@ -349,11 +349,16 @@ function Matches() {
 
 function UserDetail(props) {
 
-    const userId = props.match.params.id
-
+   
 
     const [user, setUser] = React.useState({ user_img: [] })
 
+    const userId = props.match.params.id;
+    
+    
+    const currentUser = localStorage.getItem('user');
+    const targetUser = user.user_name;
+    const roomId = [currentUser, targetUser].sort().reduce((a,b) => a+b, "");
     function getUserDetails() {
         request({ method: 'GET', path: `/api/users/${userId}` })
             .then((data) => {
@@ -385,7 +390,7 @@ function UserDetail(props) {
             <div> <i className="fas fa-envelope"></i> {user.email}</div>
             <div> <i className="fas fa-map-pin"></i> {user.location}</div>
             <div> {user.summary}</div>
-            <Button variant="outline-primary" href={`/chat/${userId}`}> New message </Button>
+            <Button variant="outline-primary" href={`/chat/${roomId}`}> New message </Button>
         </div>
     );
 }
@@ -419,34 +424,33 @@ function request({ method, body, path }) {
 //********CHAT******/
 
 function Chat(props) {
-    console.log('chat props', props)
     let socket = props.socket;
+
     const chatId = props.match.params.id
 
 
+    // console.log('storage', localStorage.getItem('user_id'))
+
+    // const [messages, setMessages] = React.useState([]);
+    const [message, setMessage] = React.useState("");
+    
+  
     React.useEffect(()=>{
-        console.log('14')
         socket.emit('join', {
             room: chatId,
             user: localStorage.getItem('user')
         })
+        socket.on("message", msg => {
+            $('#mess').append(
+                `<div><p>${msg}</p></div>`
+            )
+        });
     }, [])
-    // console.log('storage', localStorage.getItem('user_id'))
-
-    const [messages, setMessages] = React.useState([]);
-    const [message, setMessage] = React.useState("");
     
-    let count = 0;
-    socket.on("message", msg => {
-        count++
-        setMessages([...messages, msg]);
-        console.log('arr==>', count);
-    });
-    
-    const onMessage = (event) => {
-        event.preventDefault();
-        setMessage(event.target.value);
-    };
+    // const onMessage = (event) => {
+    //     event.preventDefault();
+    //     setMessage(event.target.value);
+    // };
     
     const data = {
         message,
@@ -467,8 +471,11 @@ function Chat(props) {
     return (
         <div>
             <h3>Welcome to the chat!</h3>
-            <div>{messages.map((msg, index) => (<div key={index}><p>{msg}</p></div>))}</div>
-            <p><Form.Control type="text" onChange={onMessage} value={message} /></p>
+            <div id='mess'></div>
+            {/* <div>{messages.map((msg, index) => (<div key={index}><p>{msg}</p></div>))}</div> */}
+            <p><Form.Control type="text" 
+                onChange={event => setMessage(event.target.value)}
+                value={message} /></p>
             <p><Button type="button" onClick={onClick} value="Send">Send message</Button> </p>
         </div>
     );

@@ -216,10 +216,9 @@ def handleMessage(data):
     username = data['user']
     room = data['room']
     message = data['message']
-    
-    emit('message', username + ': ' + message, room=room)
+    print(f'message - {room}')
+    send(username + ': ' + message, room=room)
 
-    # emit('cake', {'data': 'TEST MESSAGE FOR CAKE, Hello Cake!'})
     return None
 
 @socketio.on('join')
@@ -228,6 +227,7 @@ def on_join(data):
     username = data['user']
     room = data['room']
     join_room(room)
+    print(f'join - {room}')
     send(username + ' has entered the room.', room=room)
 
 if __name__ == '__main__':
