@@ -78,8 +78,8 @@ function Login(props) {
             <Form.Label className="login-lable">Password</Form.Label>
             <Form.Control type="password" name="password" onChange={e => setPassword(e.target.value)}></Form.Control>
             <br></br>
-            <Button className="margin-right" variant="outline-primary" name="log_in" onClick={login}> Log in </Button>
-            <Button variant="outline-primary" name="sing_in"> Sign in </Button>
+            <Button className="margin-right button-color" variant="info" name="log_in" onClick={login}> Log in </Button>
+            <Button variant="info" className="button-color" name="sing_in"> Sign in </Button>
         </Form>
     </div>
     );
@@ -95,7 +95,7 @@ function HeaderNavigation() {
     if (location.pathname === '/') return null;
     return (
 
-        <Navbar bg="primary" variant="dark">
+        <Navbar className="navbar-color" variant="dark">
             <Navbar.Brand href="/">Dog<span className="brand">Tinder</span></Navbar.Brand>
             <Nav className="mr-auto">
                 <Nav.Link href="/user-profile">Profile</Nav.Link>
@@ -177,8 +177,8 @@ function UserProfile() {
                 <label>Gender</label>
                 <br></br>
                 <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-                    <ToggleButton variant="outline-primary" value={1}>male</ToggleButton>
-                    <ToggleButton variant="outline-primary" value={2}>female</ToggleButton>
+                    <ToggleButton variant="info" value={1}>male</ToggleButton>
+                    <ToggleButton variant="info" value={2}>female</ToggleButton>
                 </ToggleButtonGroup>
                 <br></br>
                 <br></br>
@@ -188,7 +188,7 @@ function UserProfile() {
                 <label>Preferences</label>
                 <Form.Control as="textarea" rows="2" name="preferences" defaultValue={state.preferences} />
                 <br></br>
-                <Button variant="outline-primary" name="save" onClick={handleClick}>Save changes</Button>
+                <Button variant="info" name="save" onClick={handleClick}>Save changes</Button>
             </Form>
         </div>
     );
@@ -277,7 +277,7 @@ function User(props) {
             <Image className="img-item" src={match.user_img} thumbnail></Image>
             <div> <i className="fas fa-user"></i> {match.user_name}</div>
             <div> {match.summary}</div>
-            <Button variant="outline-primary">Details</Button>
+            <Button variant="info">Details</Button>
             <br></br>
             <br></br>
         </li>
@@ -390,7 +390,7 @@ function UserDetail(props) {
             <div> <i className="fas fa-envelope"></i> {user.email}</div>
             <div> <i className="fas fa-map-pin"></i> {user.location}</div>
             <div> {user.summary}</div>
-            <Button variant="outline-primary" href={`/chat/${roomId}`}> New message </Button>
+            <Button variant="info" href={`/chat/${roomId}`}> Start chat </Button>
         </div>
     );
 }
@@ -427,10 +427,6 @@ function Chat(props) {
     let socket = props.socket;
 
     const chatId = props.match.params.id
-
-
-    // console.log('storage', localStorage.getItem('user_id'))
-
     // const [messages, setMessages] = React.useState([]);
     const [message, setMessage] = React.useState("");
     
@@ -476,7 +472,7 @@ function Chat(props) {
             <p><Form.Control type="text" 
                 onChange={event => setMessage(event.target.value)}
                 value={message} /></p>
-            <p><Button type="button" onClick={onClick} value="Send">Send message</Button> </p>
+            <p><Button variant="info" type="button" onClick={onClick} value="Send">Send message</Button> </p>
         </div>
     );
 };

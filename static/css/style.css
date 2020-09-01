@@ -17,6 +17,9 @@ ul {
 list-style-type: none;
 }
 
+.navbar-color {
+    background-color: #17a2b8;
+}
 
 .img-item {
     width: 400px;
@@ -35,7 +38,7 @@ list-style-type: none;
 }
 
 label {
-    color: darkblue;
+    color: #085861;
     font-family: sans-serif;
 }
 
@@ -57,10 +60,12 @@ p {
     margin-right: 10px;
 }
 
+
 .center {
     margin: auto;
     width: 50%;
 }
+
 
 .item {
     width: 500px;
