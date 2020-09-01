@@ -4,6 +4,8 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
 from model import connect_to_db
 from random import choice, randint
+from passlib.hash import argon2
+
 
 import json
 import crud
@@ -208,8 +210,6 @@ def update_profile():
     return jsonify({'status': 'ok', 'message': 'user successful updated'})
 
 #***CREATE CHAT***
-
-
 @socketio.on("chat")
 def handleMessage(data):
     print(f'MessaGE====>{data}')  
@@ -229,6 +229,38 @@ def on_join(data):
     join_room(room)
     print(f'join - {room}')
     send(username + ' has entered the room.', room=room)
+
+
+#***ENCRYPT PASSWORDS***
+@app.route("/api/passwords")
+def encrypt_password():
+
+
+    users = crud.get_users()
+    result = []
+    for user in users:
+        password = user.password
+        hashed = argon2.hash(password)
+        result.append(hashed)
+
+    #TODO
+    #update passwords in DB
+    #check encripted pass in Login?    
+  
+    # del passwd
+    # while True:
+    #     attempt = raw_input("Verify your password: ")
+    #     if argon2.verify(attempt, hashed):
+    #         print("Correct!")
+    #         break
+    #     else:
+    #         print("Incorrect!")
+
+    return jsonify(result)
+   
+    
+
+      
 
 if __name__ == '__main__':
     connect_to_db(app)
