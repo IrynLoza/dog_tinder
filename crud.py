@@ -32,7 +32,17 @@ def update_user_by_id(id, data):
     
     db.session.commit()
 
-    return updated_user    
+    return updated_user   
+    
+def update_user_password_by_id(user_id, password):
+    """"""
+
+    new_password = db.session.query(User).filter(User.user_id == user_id)\
+       .update({User.password: password})
+    
+    db.session.commit()
+
+    return new_password    
 
 
 def get_users():

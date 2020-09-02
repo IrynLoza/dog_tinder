@@ -39,13 +39,16 @@ def get_users():
 
     return jsonify(result)
 
+
 @app.route("/api/login", methods=['POST'])
 def login():
 
     data = request.get_json()
     user = crud.get_user_by_user_name(data['userName'])
+    input_password = data['password']
+    print(f'input password=====>>>>>{input_password}')
     if user:
-        if user.password == data['password']:
+        if argon2.verify(input_password, user.password) == True:
             session['user'] = {'user_name': user.user_name, 'user_id': user.user_id}
       
             #create access token for user 
@@ -234,33 +237,21 @@ def on_join(data):
 #***ENCRYPT PASSWORDS***
 @app.route("/api/passwords")
 def encrypt_password():
-
+    """"""
 
     users = crud.get_users()
     result = []
     for user in users:
         password = user.password
+
+        #encrypt password
         hashed = argon2.hash(password)
+
+        #update password in db
+        crud.update_user_password_by_id(user.user_id, hashed)
         result.append(hashed)
 
-    #TODO
-    #update passwords in DB
-    #check encripted pass in Login?    
-  
-    # del passwd
-    # while True:
-    #     attempt = raw_input("Verify your password: ")
-    #     if argon2.verify(attempt, hashed):
-    #         print("Correct!")
-    #         break
-    #     else:
-    #         print("Incorrect!")
-
-    return jsonify(result)
-   
-    
-
-      
+    return jsonify(result)       
 
 if __name__ == '__main__':
     connect_to_db(app)
