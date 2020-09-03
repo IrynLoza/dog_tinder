@@ -215,23 +215,27 @@ def update_profile():
 #***CREATE CHAT***
 @socketio.on("chat")
 def handleMessage(data):
+    """"""
+    
     print(f'MessaGE====>{data}')  
     username = data['user']
     room = data['room']
     message = data['message']
     print(f'message - {room}')
-    send(username + ': ' + message, room=room)
+    send({'username': username, 'message': message}, room=room)
 
     return None
 
 @socketio.on('join')
 def on_join(data):
+    """"""
+
     print('JOIN==>')
     username = data['user']
     room = data['room']
     join_room(room)
     print(f'join - {room}')
-    send(username + ' has entered the room.', room=room)
+    send({'username': username, 'message': 'join'}, room=room)
 
 
 #***ENCRYPT PASSWORDS***

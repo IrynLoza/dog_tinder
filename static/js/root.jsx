@@ -335,7 +335,7 @@ function Matches() {
                     <Pagination className="pagination">
                         {pages.map((el, index) => {
                             return (
-                                <Pagination.Item key={index}>{el}</Pagination.Item>
+                                <Pagination.Item id="pagination-color" key={index}>{el}</Pagination.Item>
                             )
                         })}
                     </Pagination>
@@ -426,23 +426,30 @@ function Chat(props) {
     const [message, setMessage] = React.useState("");
     
   
-    React.useEffect(()=>{
+    React.useEffect(() => {
         socket.emit('join', {
             room: chatId,
             user: localStorage.getItem('user')
         })
         socket.on("message", msg => {
-            if (localStorage.getItem('user')) { //Check if current user??
+            console.log('message===>', msg)
+            let element = document.querySelector("#mess"); //Change color
+            let child = document.createElement('DIV'); 
 
-            $('#mess').append(
-                `<div><p>${msg}</p></div>`  //Change color
-            )
-            } else {
-                $('#mess').append(
-                    `<div><p>${msg}</p></div>`  //Change color
-                )
-        }
-
+            if (msg.message === 'join') 
+            {
+                child.className += 'current-user-message';
+                child.innerHTML = `<div><p>${msg.username} has entered the room</p></div>`;
+            } else if (localStorage.getItem('user') === msg.username) {
+                console.log('localstr==>', localStorage.getItem('user'))
+                child.className += 'current-user-message';
+                child.innerHTML = `<div><p>${msg.message}</p></div>`;
+            }  else {
+                child.className += 'user-message';
+                child.innerHTML = `<div><p>${msg.username}: ${msg.message}</p></div>`;
+            }   
+            
+            element.appendChild(child);
         });
     }, [])
     

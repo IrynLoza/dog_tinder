@@ -37,9 +37,24 @@ list-style-type: none;
     justify-content: center;
 }
 
+#pagination-color {
+    background-color: #17a2b8;
+    color: white;
+    cursor: pointer;
+}
+
+#pagination-color:hover {
+    color: rgb(255, 255, 255);
+}
+
+.page-link:hover{
+    background: red;
+}
+
 
 label {
     color: #085861;
+    background-color: #085861;
     font-family: sans-serif;
 }
 
@@ -53,8 +68,8 @@ h1, h3 {
 }
 
 p {
-        font-family: sans-serif;
-        text-align: center;
+    font-family: sans-serif;
+    text-align: center;
 }
 
 .margin-right {
@@ -85,13 +100,21 @@ p {
 }
 
 .profile-menu:hover {
-    color: rgb(255, 255, 255)
+    color: rgb(255, 255, 255);
 }
 
-/* .current-user-message {
-    color: green
+.current-user-message {
+    color: #011c1f
 }
 
 .user-message {
-    color: blue
+    color: #0a727e
+}
+/* 
+.chat-container {
+    height: 400px;
+    overflow: auto;
+    transform: rotate(180deg);
+    direction: rtl;
 } */
+  
