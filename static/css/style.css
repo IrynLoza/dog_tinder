@@ -1,3 +1,7 @@
+/* body {
+    background: url("/static/images/fon.jpg") no-repeat fixed center;
+} */
+
 .margin-top-20 {
     margin-top: 20px;
 }
@@ -33,6 +37,18 @@ list-style-type: none;
     padding: 3px;
 }
 
+.img-carusel {
+    width: 550px;
+    position:relative;
+    overflow:hidden;
+    min-height: 450px;
+    max-height: 450px;
+    max-width: 550px;
+    height: auto;
+    margin: 3px;
+    padding: 3px;
+} 
+
 .pagination {
     justify-content: center;
 }
@@ -54,12 +70,13 @@ list-style-type: none;
 
 label {
     color: #085861;
-    background-color: #085861;
+    background-color: white;
     font-family: sans-serif;
 }
 
 .login-lable {
     color: #212529;
+    background-color: white;
 }
 
 h1, h3 {
@@ -76,12 +93,9 @@ p {
     margin-right: 10px;
 }
 
-
 .center {
-    margin: auto;
-    width: 50%;
+    text-align: center;
 }
-
 
 .item {
     width: 500px;
@@ -104,17 +118,17 @@ p {
 }
 
 .current-user-message {
-    color: #011c1f
+    color: #011c1f;
 }
 
 .user-message {
     color: #0a727e
 }
-/* 
-.chat-container {
+
+.chat {
+    padding: 15px;
+    width: 100%;
     height: 400px;
-    overflow: auto;
-    transform: rotate(180deg);
-    direction: rtl;
-} */
-  
+    overflow: scroll;
+    border: 1px solid #ccc;
+  }

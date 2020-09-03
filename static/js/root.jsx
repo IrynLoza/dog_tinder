@@ -248,17 +248,17 @@ function Users() {
     }
 
     return (
-    <Row>
-   <Col>
-        <Image className="item" src={image} thumbnail></Image>
-    </Col>
-    <Col>
-    <div> <i className="fas fa-user"></i> {name}</div>
-    <div> Summary: {summary}</div>
-        <Button className="margin-right" variant="outline-warning" name="dislike" onClick={dislike}> <i className="far fa-meh"></i> </Button>
-        <Button variant="outline-success" name="like" onClick={like}> <i className="far fa-heart"></i> </Button>
-    </Col>
-    </Row>
+        <Row>
+            <Col>
+                <Image className="item" src={image} thumbnail></Image>
+            </Col>
+            <Col>
+                <div> <i className="fas fa-user"></i> {name}</div>
+                <div> Summary: {summary}</div>
+                <Button className="margin-right" variant="outline-warning" name="dislike" onClick={dislike}> <i className="far fa-meh"></i> </Button>
+                <Button variant="outline-success" name="like" onClick={like}> <i className="far fa-heart"></i> </Button>
+            </Col>
+        </Row>
     );
 }
 
@@ -353,7 +353,7 @@ function UserDetail(props) {
     const userId = props.match.params.id;
     const currentUser = localStorage.getItem('user');
     const targetUser = user.user_name;
-    const roomId = [currentUser, targetUser].sort().reduce((a,b) => a+b, "");
+    const roomId = [currentUser, targetUser].sort().reduce((a, b) => a + b, "");
     function getUserDetails() {
         request({ method: 'GET', path: `/api/users/${userId}` })
             .then((data) => {
@@ -372,8 +372,8 @@ function UserDetail(props) {
             <Carousel>
                 {user.user_img.map((img, index) => {
                     return (
-                        <Carousel.Item  key={index}>
-                            <img className="img-item" src={img} alt={`First ${index}`}></img>
+                        <Carousel.Item key={index}>
+                            <img className="img-carusel" src={img} alt={`First ${index}`}></img>
                         </Carousel.Item>
                     )
                 })}
@@ -422,10 +422,9 @@ function Chat(props) {
     let socket = props.socket;
 
     const chatId = props.match.params.id
-    // const [messages, setMessages] = React.useState([]);
     const [message, setMessage] = React.useState("");
-    
-  
+
+
     React.useEffect(() => {
         socket.emit('join', {
             room: chatId,
@@ -433,31 +432,25 @@ function Chat(props) {
         })
         socket.on("message", msg => {
             console.log('message===>', msg)
-            let element = document.querySelector("#mess"); //Change color
-            let child = document.createElement('DIV'); 
+            let element = document.querySelector("#mess"); 
+            let child = document.createElement('DIV');
 
-            if (msg.message === 'join') 
-            {
+            if (msg.message === 'join') {
                 child.className += 'current-user-message';
                 child.innerHTML = `<div><p>${msg.username} has entered the room</p></div>`;
             } else if (localStorage.getItem('user') === msg.username) {
                 console.log('localstr==>', localStorage.getItem('user'))
                 child.className += 'current-user-message';
                 child.innerHTML = `<div><p>${msg.message}</p></div>`;
-            }  else {
+            } else {
                 child.className += 'user-message';
                 child.innerHTML = `<div><p>${msg.username}: ${msg.message}</p></div>`;
-            }   
-            
+            }
+
             element.appendChild(child);
         });
     }, [])
-    
-    // const onMessage = (event) => {
-    //     event.preventDefault();
-    //     setMessage(event.target.value);
-    // };
-    
+
     const data = {
         message,
         room: chatId,
@@ -466,29 +459,28 @@ function Chat(props) {
 
     const onClick = () => {
         console.log('Clicked==>')
-        if(data.message !== "") {
+        if (data.message !== "") {
             socket.emit("chat", data);
             setMessage("");
         } else {
             alert('Please, add message.')
         }
     };
-    
+
     return (
         <div>
             <h3>Welcome to the chat!</h3>
-            <div id='mess'></div>
-            {/* <div>{messages.map((msg, index) => (<div key={index}><p>{msg}</p></div>))}</div> */}
-            <Form.Control type="text" 
+            <div className="chat" id='mess'></div>
+            <Form.Control type="text"
                 onChange={event => setMessage(event.target.value)}
                 value={message} />
-            <br></br>    
+            <br></br>
             <Button variant="info" type="button" onClick={onClick} value="Send">Send message</Button>
         </div>
     );
 };
 
- 
+
 //*******ROUTES**********/
 
 function PrivateRoute() {
@@ -505,7 +497,7 @@ function PrivateRoute() {
             <Route exact path="/matches"><Matches /></Route>
             <Route path="/matches/:id" render={routeProps => <UserDetail {...routeProps} />} />
             <Route path="/users"><Users /></Route>
-            <Route path="/user-profile"><UserProfile/></Route>
+            <Route path="/user-profile"><UserProfile /></Route>
             <Route path="/chat/:id" render={routeProps => <Chat socket={socket} {...routeProps} />} />
         </div>
     );
@@ -519,19 +511,21 @@ function App() {
                 <HeaderNavigation />
                 <Container className="margin-top-20">
                     <Row>
-                        {/* <Col> */}
+                        <Col md={{ span: 6, offset: 3 }}>
                             <Switch>
                                 {/* exact show the main route */}
                                 <Route exact path="/"><Login /></Route>
                                 <PrivateRoute />
                             </Switch>
-                        {/* </Col> */}
+                        </Col>
                     </Row>
                 </Container>
             </div>
         </Router>
     );
 }
+
+
 
 ReactDOM.render(<App />, document.getElementById('root'))
 
