@@ -98,10 +98,10 @@ function HeaderNavigation() {
         <Navbar className="navbar-color" variant="dark">
             <Navbar.Brand href="/">Dog<span className="brand">Tinder</span></Navbar.Brand>
             <Nav className="mr-auto">
-                <Nav.Link href="/user-profile">Profile</Nav.Link>
                 <Nav.Link href="/users">Users</Nav.Link>
                 <Nav.Link href="/matches">Matches</Nav.Link>
             </Nav>
+            <Nav.Link className="profile-menu" href="/user-profile">Profile</Nav.Link>
             <Button variant="outline-light"><Logout /></Button>
         </Navbar>
     );
@@ -348,14 +348,9 @@ function Matches() {
 
 
 function UserDetail(props) {
-
-   
-
     const [user, setUser] = React.useState({ user_img: [] })
 
     const userId = props.match.params.id;
-    
-    
     const currentUser = localStorage.getItem('user');
     const targetUser = user.user_name;
     const roomId = [currentUser, targetUser].sort().reduce((a,b) => a+b, "");
@@ -437,9 +432,17 @@ function Chat(props) {
             user: localStorage.getItem('user')
         })
         socket.on("message", msg => {
+            if (localStorage.getItem('user')) { //Check if current user??
+
             $('#mess').append(
-                `<div><p>${msg}</p></div>`
+                `<div><p>${msg}</p></div>`  //Change color
             )
+            } else {
+                $('#mess').append(
+                    `<div><p>${msg}</p></div>`  //Change color
+                )
+        }
+
         });
     }, [])
     
@@ -469,10 +472,11 @@ function Chat(props) {
             <h3>Welcome to the chat!</h3>
             <div id='mess'></div>
             {/* <div>{messages.map((msg, index) => (<div key={index}><p>{msg}</p></div>))}</div> */}
-            <p><Form.Control type="text" 
+            <Form.Control type="text" 
                 onChange={event => setMessage(event.target.value)}
-                value={message} /></p>
-            <p><Button variant="info" type="button" onClick={onClick} value="Send">Send message</Button> </p>
+                value={message} />
+            <br></br>    
+            <Button variant="info" type="button" onClick={onClick} value="Send">Send message</Button>
         </div>
     );
 };

@@ -37,6 +37,7 @@ list-style-type: none;
     justify-content: center;
 }
 
+
 label {
     color: #085861;
     font-family: sans-serif;
@@ -77,4 +78,20 @@ p {
     padding: 3px;
 } 
 
+.profile-menu {
+    color: rgba(255,255,255,.5);
+    font-size: 0.8rem;
 
+}
+
+.profile-menu:hover {
+    color: rgb(255, 255, 255)
+}
+
+/* .current-user-message {
+    color: green
+}
+
+.user-message {
+    color: blue
+} */
