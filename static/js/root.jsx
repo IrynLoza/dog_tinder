@@ -67,10 +67,8 @@ function Login(props) {
             })
     }
     return (<div>
-        <h1> Welcome to Dog Tinder! </h1>
-        <p> Bring more fun to you fluffy friend life! </p>
-        {/* *** The main image should be here *** */}
-        {/* <img src="/static/images/main.png"></img> */}
+        <h1> Offleash your dog with DogTinder! </h1>
+        {/* <p> Bring more fun to you fluffy friend life! </p> */}
         <Form>
             <Form.Label className="login-lable">Username</Form.Label>
             <Form.Control type="text" name="username" onChange={e => setName(e.target.value)}></Form.Control>
@@ -96,7 +94,8 @@ function HeaderNavigation() {
     return (
 
         <Navbar className="navbar-color" variant="dark">
-            <Navbar.Brand href="/">Dog<span className="brand">Tinder</span></Navbar.Brand>
+            {/* <Navbar.Brand href="/">Dog<span className="brand">Tinder</span></Navbar.Brand> */}
+            <Navbar.Brand href="/"><img src="/static/images/logo-3.jpg" width="45" height="45"></img>og<span className="brand">Tinder</span></Navbar.Brand>
             <Nav className="mr-auto">
                 <Nav.Link href="/users">Users</Nav.Link>
                 <Nav.Link href="/matches">Matches</Nav.Link>
