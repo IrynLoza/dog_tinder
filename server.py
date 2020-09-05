@@ -39,6 +39,26 @@ def get_users():
 
     return jsonify(result)
 
+#***ENCRYPT PASSWORDS***
+@app.route("/api/passwords")
+def encrypt_password():
+    """"""
+
+    users = crud.get_users()
+    result = []
+    for user in users:
+        password = user.password
+
+        #encrypt password
+        hashed = argon2.hash(password)
+
+        #update password in db
+        crud.update_user_password_by_id(user.user_id, hashed)
+        result.append(hashed)
+
+    return jsonify(result)
+#************************        
+
 
 @app.route("/api/login", methods=['POST'])
 def login():
@@ -104,9 +124,9 @@ def get_likes():
 
     #check if target_id have ever liked current_id
     #if yes - store to match
-    is_like = crud.get_likes_by_target_id(target_id, current_user_id)
-    
-    if is_like:
+    is_like = crud.get_likes_by_target_id(current_user_id, target_id)   
+
+    if is_like:   
         #place where match create
         crud.create_match(current_user_id, target_id)
   
@@ -137,7 +157,7 @@ def get_match():
     matches_list = crud.get_matches(current_id)
     query_page = request.args.get('page')
     #create unique list with current user matches
-    #if current user = match.user_id = add data to target_user_id column
+    #if current user = match.user_id => add data to target_user_id column
     #else opposite 
     user_id_list = []
     for match in matches_list:
@@ -236,26 +256,7 @@ def on_join(data):
     join_room(room)
     print(f'join - {room}')
     send({'username': username, 'message': 'join'}, room=room)
-
-
-#***ENCRYPT PASSWORDS***
-@app.route("/api/passwords")
-def encrypt_password():
-    """"""
-
-    users = crud.get_users()
-    result = []
-    for user in users:
-        password = user.password
-
-        #encrypt password
-        hashed = argon2.hash(password)
-
-        #update password in db
-        crud.update_user_password_by_id(user.user_id, hashed)
-        result.append(hashed)
-
-    return jsonify(result)       
+       
 
 if __name__ == '__main__':
     connect_to_db(app)

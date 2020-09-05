@@ -151,8 +151,8 @@ def get_likes_by_user(user_id):
 def get_likes_by_target_id(user_id, target_user_id):
     """Get and return likes by user"""
 
-    return Like.query.filter((Like.user_id == user_id) | (Like.target_user_id == user_id)).all()    
-   
+    return Like.query.filter((Like.user_id == target_user_id) & (Like.target_user_id == user_id)).all()  
+
 
 #***CREATE DISLIKE AND GET DISLIKE DATA***
 def create_dislike(user_id, target_user_id):
