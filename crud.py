@@ -1,5 +1,6 @@
 from model import db, User, Image, Like, Dislike, Match, connect_to_db
 from random import choice, randint
+from passlib.hash import argon2
 import requests
 import json
 
@@ -7,8 +8,8 @@ import json
 def create_user(user_name, password, email, breed, location, gender,
                 summary, preferences):
     """Create and return a new user."""
-
-    user = User(user_name=user_name, password=password, email=email, breed=breed, 
+    hashed = argon2.hash(password)
+    user = User(user_name=user_name, password=hashed, email=email, breed=breed, 
                 location=location, gender=gender, summary=summary,
                 preferences=preferences)
 

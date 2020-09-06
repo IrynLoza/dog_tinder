@@ -39,33 +39,16 @@ def get_users():
 
     return jsonify(result)
 
-#***ENCRYPT PASSWORDS***
-@app.route("/api/passwords")
-def encrypt_password():
-    """"""
-
-    users = crud.get_users()
-    result = []
-    for user in users:
-        password = user.password
-
-        #encrypt password
-        hashed = argon2.hash(password)
-
-        #update password in db
-        crud.update_user_password_by_id(user.user_id, hashed)
-        result.append(hashed)
-
-    return jsonify(result)
-#************************        
-
-
+       
 @app.route("/api/login", methods=['POST'])
 def login():
 
     data = request.get_json()
     user = crud.get_user_by_user_name(data['userName'])
+   
     input_password = data['password']
+    print(f'user: {user.password}')
+    print(f'argon2: {argon2.verify(input_password, user.password)}')
     print(f'input password=====>>>>>{input_password}')
     if user:
         if argon2.verify(input_password, user.password) == True:
@@ -75,7 +58,7 @@ def login():
             #use jwt (json web token) instead of cookies
             access_token = create_access_token(identity = {'user_name': user.user_name, 'user_id': user.user_id})
             return jsonify({'status': 'ok', 'access_token': access_token})
-    return jsonify({'status': 'ERROR', 'message': 'Username or passwor is not correct'})
+    return jsonify({'status': 'ERROR', 'message': 'Username or password is not correct'})
 
 
 @app.route("/api/random-user")
