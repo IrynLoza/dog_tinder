@@ -13,6 +13,7 @@ const { Badge, Button, ToggleButtonGroup, ToggleButton, Pagination, Col, Carouse
 
 //********LOG IN / LOG OUT*****/
 
+//Create component to handle Logout in client side
 function Logout() {
     const history = useHistory();
 
@@ -25,8 +26,8 @@ function Logout() {
     )
 }
 
+//Create component to handle Login in client side
 function Login(props) {
-    console.log('here')
     const sessionKey = localStorage.getItem('session-key');
     const history = useHistory();
     if (sessionKey) {
@@ -36,14 +37,8 @@ function Login(props) {
     const [userName, setName] = React.useState('');
     const [password, setPassword] = React.useState('');
 
-
     function login(e) {
         e.preventDefault();
-
-        console.log('userName', userName)
-        console.log('password', password)
-
-
         fetch('/api/login', {
             method: 'POST',
             body: JSON.stringify({ userName, password }),
@@ -67,8 +62,7 @@ function Login(props) {
             })
     }
     return (<div>
-        <h1> Offleash your dog with DogTinder! </h1>
-        {/* <p> Bring more fun to you fluffy friend life! </p> */}
+        <h1> <img src="/static/images/logo.jpg" width="60" height="60"></img>ogTinder</h1>
         <Form>
             <Form.Label className="login-lable">Username</Form.Label>
             <Form.Control type="text" name="username" onChange={e => setName(e.target.value)}></Form.Control>
@@ -88,13 +82,11 @@ function Login(props) {
 //*********NAV BAR******/
 
 function HeaderNavigation() {
-    // const logo = "/static/images/logo.jpg";
     const location = useLocation();
     if (location.pathname === '/') return null;
     return (
 
         <Navbar className="navbar-color" variant="dark">
-            {/* <Navbar.Brand href="/">Dog<span className="brand">Tinder</span></Navbar.Brand> */}
             <Navbar.Brand href="/"><img src="/static/images/logo-3.jpg" width="45" height="45"></img>og<span className="brand">Tinder</span></Navbar.Brand>
             <Nav className="mr-auto">
                 <Nav.Link href="/users">Users</Nav.Link>
@@ -138,8 +130,6 @@ function UserProfile() {
                 console.log('data from handleClick', data)
             })
     }
-
-
 
     return (
         <div onChange={handleChange}>
@@ -368,8 +358,6 @@ function UserDetail(props) {
         getUserDetails()
     }, [])
 
-
-
     return (
         <div>
             <Carousel>
@@ -426,11 +414,11 @@ function request({ method, body, path }) {
 
 function Chat(props) {
     let socket = props.socket;
-    let targetUser = props.targetId; 
 
-    const chatId = props.match.params.id
+    const chatId = props.match.params.id;
+    const targetUser = chatId.replace(localStorage.getItem('user'), "")
+
     const [message, setMessage] = React.useState("");
-
     React.useEffect(() => {
         socket.emit('join', {
             room: chatId,
@@ -478,7 +466,7 @@ function Chat(props) {
 
     return (
         <div>
-            <h3>Welcome to the chat</h3>
+            <h3>Start chat with {targetUser}</h3>
             <div className="chat" id='mess'></div>
             <Form.Control type="text"
                 onChange={event => setMessage(event.target.value)}
@@ -532,7 +520,6 @@ function App() {
         </Router>
     );
 }
-
 
 
 ReactDOM.render(<App />, document.getElementById('root'))
