@@ -252,8 +252,10 @@ function Users() {
                 <Image className="item" src={image} thumbnail></Image>
             </Col>
             <Col>
+                <div className="text">
                 <div> <i className="fas fa-user"></i> {name}</div>
-                <div> Summary: {summary}</div>
+                <div> {summary}</div>
+                </div>
                 <Button className="margin-right" variant="outline-warning" name="dislike" onClick={dislike}> <i className="far fa-meh"></i> </Button>
                 <Button variant="outline-success" name="like" onClick={like}> <i className="far fa-heart"></i> </Button>
             </Col>
@@ -274,8 +276,10 @@ function User(props) {
     return (
         <li onClick={userDetail}>
             <Image className="img-item" src={match.user_img} thumbnail></Image>
+            <div className="text">
             <div> <i className="fas fa-user"></i> {match.user_name}</div>
             <div> {match.summary}</div>
+            </div>
             <Button variant="info">Details</Button>
             <br></br>
             <br></br>
@@ -378,12 +382,15 @@ function UserDetail(props) {
                 })}
             </Carousel>
             <br></br>
+            <div className="text">
             <div> <i className="fas fa-user"></i> {user.user_name}</div>
             <div> <i className="fas fa-paw"></i> {user.breed}</div>
             <div> <i className="fas fa-venus-mars"></i> {user.gender}</div>
             <div> <i className="fas fa-envelope"></i> {user.email}</div>
             <div> <i className="fas fa-map-pin"></i> {user.location}</div>
             <div> {user.summary}</div>
+            </div>
+            <br></br>
             <Button variant="info" href={`/chat/${roomId}`}> Start chat </Button>
         </div>
     );
@@ -419,10 +426,10 @@ function request({ method, body, path }) {
 
 function Chat(props) {
     let socket = props.socket;
+    let targetUser = props.targetId; 
 
     const chatId = props.match.params.id
     const [message, setMessage] = React.useState("");
-
 
     React.useEffect(() => {
         socket.emit('join', {
@@ -431,19 +438,22 @@ function Chat(props) {
         })
         socket.on("message", msg => {
             console.log('message===>', msg)
-            let element = document.querySelector("#mess"); 
+            let element = document.querySelector("#mess");
             let child = document.createElement('DIV');
 
             if (msg.message === 'join') {
-                child.className += 'current-user-message';
+                child.className += 'join';
                 child.innerHTML = `<div><p>${msg.username} has entered the room</p></div>`;
+                $(".chat").stop().animate({ scrollTop: $(".chat")[0].scrollHeight }, 1000);
             } else if (localStorage.getItem('user') === msg.username) {
                 console.log('localstr==>', localStorage.getItem('user'))
                 child.className += 'current-user-message';
-                child.innerHTML = `<div><p>${msg.message}</p></div>`;
+                child.innerHTML = `<div>${msg.message}</div>`;
+                $(".chat").stop().animate({ scrollTop: $(".chat")[0].scrollHeight }, 1000);
             } else {
                 child.className += 'user-message';
-                child.innerHTML = `<div><p>${msg.username}: ${msg.message}</p></div>`;
+                child.innerHTML = `<div>${msg.message}</div>`;
+                $(".chat").stop().animate({ scrollTop: $(".chat")[0].scrollHeight }, 1000);
             }
 
             element.appendChild(child);
@@ -468,7 +478,7 @@ function Chat(props) {
 
     return (
         <div>
-            <h3>Welcome to the chat!</h3>
+            <h3>Welcome to the chat</h3>
             <div className="chat" id='mess'></div>
             <Form.Control type="text"
                 onChange={event => setMessage(event.target.value)}
@@ -481,7 +491,6 @@ function Chat(props) {
 
 
 //*******ROUTES**********/
-
 function PrivateRoute() {
     const socket = io()
     const sessionKey = localStorage.getItem('session-key');

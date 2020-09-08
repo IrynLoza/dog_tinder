@@ -1,7 +1,3 @@
-/* body {
-    background: url("/static/images/fon.jpg") no-repeat fixed center;
-} */
-
 .margin-top-20 {
     margin-top: 20px;
 }
@@ -38,12 +34,12 @@ list-style-type: none;
 }
 
 .img-carusel {
-    width: 550px;
+    width: 500px;
     position:relative;
     overflow:hidden;
-    min-height: 450px;
-    max-height: 450px;
-    max-width: 550px;
+    min-height: 400px;
+    max-height: 400px;
+    max-width: 500px;
     height: auto;
     margin: 3px;
     padding: 3px;
@@ -55,6 +51,7 @@ list-style-type: none;
 
 #pagination-color {
     background-color: #17a2b8;
+    border-color: #10707f;
     color: white;
     cursor: pointer;
 }
@@ -67,26 +64,27 @@ list-style-type: none;
     background: red;
 }
 
-
 label {
     color: #085861;
     background-color: white;
     font-family: sans-serif;
+    font-weight: bold;
 }
 
 .login-lable {
-    color: #212529;
+    color: #117a8b;
     background-color: white;
 }
 
 h1, h3 {
     font-family: sans-serif;
     text-align: center;
+    color: #117a8b;
 }
 
 p {
     font-family: sans-serif;
-    text-align: center;
+    text-align: center;  
 }
 
 .margin-right {
@@ -98,10 +96,10 @@ p {
 }
 
 .item {
-    width: 500px;
-    min-height: 400px;
-    max-height: 400px;
-    max-width: 500px;
+    width: 450px;
+    min-height: 350px;
+    max-height: 350px;
+    max-width: 450px;
     height: auto;
     margin: 3px;
     padding: 3px;
@@ -110,25 +108,65 @@ p {
 .profile-menu {
     color: rgba(255,255,255,.5);
     font-size: 0.8rem;
-
 }
 
 .profile-menu:hover {
     color: rgb(255, 255, 255);
 }
 
+.text {
+    color: #085861;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.join {
+    color: #0a727e;
+    text-align: center;
+}
+
 .current-user-message {
-    color: #011c1f;
+    font-size: 18px;
+    font-weight:500;
+    text-align: right;
+    border: 2px solid #dedede;
+    background-color: #17a2b8;
+    color:white;
+    border-radius: 12px;
+    padding: 10px;
+    margin: 10px 0;
+} 
+
+.current-user-message:after{
+    content: "";
+    clear: both;
+    display: table;
 }
 
 .user-message {
-    color: #0a727e
+    font-size: 18px;
+    font-weight:500;
+    text-align: left;
+    border: 2px solid #dedede;
+    background-color: white;
+    color:#17a2b8;
+    border-radius: 12px;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.user-message:after{
+    content: "";
+    clear: both;
+    display: table;
 }
 
 .chat {
     padding: 15px;
+    background-color: white;
     width: 100%;
     height: 400px;
     overflow: scroll;
     border: 1px solid #ccc;
-  }
+}
+
