@@ -19,7 +19,8 @@ def create_user(user_name, password, email, breed, location, gender,
     return user
 
 def update_user_by_id(id, data):
-    """"""
+    """Update user information by id, update in database 
+    and return updated user"""
 
     updated_user = db.session.query(User).filter(User.user_id == id)\
        .update({
@@ -36,7 +37,8 @@ def update_user_by_id(id, data):
     return updated_user   
     
 def update_user_password_by_id(user_id, password):
-    """"""
+    """Update user password by id, update in database 
+    and return the new user password"""
 
     new_password = db.session.query(User).filter(User.user_id == user_id)\
        .update({User.password: password})
@@ -53,32 +55,37 @@ def get_users():
 
 
 def get_user_by_ids(id_list):
-    """Get users"""
+    """Get and return all users"""
     # in - method get the list of id
     return db.session.query(User).filter(User.user_id.in_(id_list)).all()
 
 
 def get_user_by_id(user_id):
-    """Get user object by id"""
+    """Get and return user object by id"""
 
     return User.query.get(user_id)
 
+
 def get_user_img_by_id(user_id):
+    """Get and return the first user image by id"""
 
     return Image.query.filter(Image.user_id == user_id).first()
 
+
 def get_user_imgs_by_id(user_id):
+    """Get and return all user images by id"""
 
     return Image.query.filter(Image.user_id == user_id).all()
 
+
 def get_user_by_user_name(user_name):
-    """Get user object by user name"""
+    """Get and return user object by user name"""
 
     return User.query.filter(User.user_name == user_name).one()    
 
 
 def get_user_by_email(email):
-    """Get user object by email"""
+    """Get and return user object by email"""
 
     return User.query.filter(User.email == email).one() 
 
@@ -116,8 +123,10 @@ def get_random_image_by_breed(breed):
     
     return imgs_url['message']   
 
+
 def update_image_by_id(image_id, url):
-    """"""
+    """Update user image by id, update in database 
+    and return the updated image"""
     
     new_image = db.session.query(Image).filter(Image.image_id == image_id)\
        .update({Image.image_url: url})
@@ -144,10 +153,12 @@ def get_likes():
 
     return Like.query.all()
 
+
 def get_likes_by_user(user_id):
     """Get and return likes by user"""
 
     return Like.query.filter(Like.user_id == user_id).all()
+
 
 def get_likes_by_target_id(user_id, target_user_id):
     """Get and return likes by user"""
@@ -190,10 +201,12 @@ def create_match(user_id, target_user_id):
 
     return match
 
+
 def get_matches(user_id):
     """Get chats"""
 
     return Match.query.filter((Match.user_id == user_id) | (Match.target_user_id == user_id)).all() 
+
 
 
 
