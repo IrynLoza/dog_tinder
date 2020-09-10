@@ -8,37 +8,51 @@ const Switch = ReactRouterDOM.Switch;
 const Redirect = ReactRouterDOM.Redirect;
 const useLocation = ReactRouterDOM.useLocation;
 const useHistory = ReactRouterDOM.useHistory;
-const { Badge, Button, ToggleButtonGroup, ToggleButton, Pagination, Col, Carousel, Image, Container, Form, FormControl, ListGroup, Navbar, Card, Nav, Row, Table } = ReactBootstrap;
+const { Button, ToggleButtonGroup, ToggleButton, Pagination, Col, Carousel, Image, Container, Form, FormControl, ListGroup, Navbar, Card, Nav, Row, Table } = ReactBootstrap;
 
 
 //********LOG IN / LOG OUT*****/
-
 //Create component to handle Logout in client side
 function Logout() {
+    //Use useHistory hook (Gives access to the history 
+    //instance that use to navigate) for redirect
     const history = useHistory();
 
     function logout() {
+        //Remove record about user from local storage 
+        //After Logout
         localStorage.removeItem('session-key');
+        //Redirect to the homepage 
         history.push("/");
     }
+
     return (
         <a className='logout' onClick={logout}>Logout</a>
     )
 }
 
-//Create component to handle Login in client side
-function Login(props) {
+
+//Create component to handle Login page in client side
+function Login() {
+    //Take record about current user from local storage
     const sessionKey = localStorage.getItem('session-key');
     const history = useHistory();
+
+    //If record in local storage, redirect to the page with users shown one per time
     if (sessionKey) {
         history.push("/users");
     }
 
+    //Use useState for adding React state to function components
     const [userName, setName] = React.useState('');
     const [password, setPassword] = React.useState('');
 
     function login(e) {
         e.preventDefault();
+
+        //Send POST request to the server
+        //Use fetch for asynchronous interaction with server
+        //Put sending data into body
         fetch('/api/login', {
             method: 'POST',
             body: JSON.stringify({ userName, password }),
@@ -46,6 +60,10 @@ function Login(props) {
                 'Content-Type': 'application/json'
             },
         })
+        //Use promiss, waiting for response from server
+        //When get a response (username and password exist and relevant)
+        //Add record (using JWT token) about user to the local storage
+        //If data (username and password are not relevant), show alert
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'ok') {
@@ -53,20 +71,17 @@ function Login(props) {
                     localStorage.setItem('session-key', data.access_token);
                     localStorage.setItem('user', userName);
                     history.push("/users");
-                    console.log('key', localStorage.getItem('session-key'));
                 } else {
-                    console.log(data.message);
                     alert('Invalid Email or Password')
                 }
-
             })
     }
+
     return (<div>
         <h1> <img src="/static/images/logo.jpg" width="60" height="60"></img>ogTinder</h1>
         <Form>
             <Form.Label className="login-lable">Username</Form.Label>
             <Form.Control type="text" name="username" onChange={e => setName(e.target.value)}></Form.Control>
-
             <Form.Label className="login-lable">Password</Form.Label>
             <Form.Control type="password" name="password" onChange={e => setPassword(e.target.value)}></Form.Control>
             <br></br>
@@ -79,13 +94,16 @@ function Login(props) {
 }
 
 
-//*********NAV BAR******/
-
+//*********NAVIGATION BAR******/
+//Create component to handle Navigation in client side
 function HeaderNavigation() {
+    //Use hook useLocation for returning the location object that represents the current UR 
     const location = useLocation();
-    if (location.pathname === '/') return null;
-    return (
 
+    //Show Navigation if user not in login page
+    if (location.pathname === '/') return null;
+
+    return (
         <Navbar className="navbar-color" variant="dark">
             <Navbar.Brand href="/"><img src="/static/images/logo-3.jpg" width="45" height="45"></img>og<span className="brand">Tinder</span></Navbar.Brand>
             <Nav className="mr-auto">
@@ -98,13 +116,13 @@ function HeaderNavigation() {
     );
 }
 
-//******CURRENT USER*******/
 
+//******CURRENT USER*******/
+//Create component to handle UserProfile page in client side
 function UserProfile() {
     const [state, setState] = React.useState({})
 
     function handleChange(evt) {
-        console.log('eveveeeeent', evt.target)
         const value = evt.target.value;
         setState({
             ...state,
@@ -120,6 +138,7 @@ function UserProfile() {
             })
     }
 
+    //Use useEffect for performing side effects in function components
     React.useEffect(() => {
         getCurrentUser()
     }, [])
@@ -185,14 +204,15 @@ function UserProfile() {
 
 
 //*******FIND MATCH******/
-
+//Create component to handle page with users (one user per time) in client side
 function Users() {
-
     const [image, setImage] = React.useState('')
     const [name, setName] = React.useState('')
     const [summary, setSummary] = React.useState('')
     const [target_id, setTarget] = React.useState('');
 
+    //Add function for handling sending POST request with 
+    //random user to the server 
     function getRandomUser() {
         request({ method: 'GET', path: '/api/random-user' })
             .then((data) => {
@@ -208,31 +228,27 @@ function Users() {
         getRandomUser()
     }, [])
 
+    //Add function for handling sending POST request with like
+    //To the server 
     function like() {
         request({ method: 'POST', body: { target_id }, path: '/api/like' })
             .then(data => {
                 if (data.status === 'ok') {
-                    console.log('Likes happend!!!')
                     getRandomUser()
-
                 } else {
-                    console.log(data.message);
                 }
-
             })
     }
 
+    //Add function for handling sending POST request with dislike
+    //To the server 
     function dislike() {
         request({ method: 'POST', body: { target_id }, path: '/api/dislike' })
             .then(data => {
                 if (data.status === 'ok') {
-                    console.log('Dislike happend!!!')
                     getRandomUser()
-
                 } else {
-                    console.log(data.message);
                 }
-
             })
     }
 
@@ -243,8 +259,8 @@ function Users() {
             </Col>
             <Col>
                 <div className="text">
-                <div> <i className="fas fa-user"></i> {name}</div>
-                <div> {summary}</div>
+                    <div> <i className="fas fa-user"></i> {name}</div>
+                    <div> {summary}</div>
                 </div>
                 <Button className="margin-right" variant="outline-warning" name="dislike" onClick={dislike}> <i className="far fa-meh"></i> </Button>
                 <Button variant="outline-success" name="like" onClick={like}> <i className="far fa-heart"></i> </Button>
@@ -254,12 +270,13 @@ function Users() {
 }
 
 
+//Create utility component for handling user information 
+//And pass to other components with props
 function User(props) {
     const { match } = props
     const history = useHistory();
 
     function userDetail() {
-        console.log('===> userDetails', match);
         history.push(`/matches/${match.user_id}`);
     }
 
@@ -267,8 +284,8 @@ function User(props) {
         <li onClick={userDetail}>
             <Image className="img-item" src={match.user_img} thumbnail></Image>
             <div className="text">
-            <div> <i className="fas fa-user"></i> {match.user_name}</div>
-            <div> {match.summary}</div>
+                <div> <i className="fas fa-user"></i> {match.user_name}</div>
+                <div> {match.summary}</div>
             </div>
             <Button variant="info">Details</Button>
             <br></br>
@@ -277,6 +294,9 @@ function User(props) {
     )
 }
 
+
+//Create utility component for handling showing users in mathces page 
+//Getting user information from User component 
 function UserList(props) {
     const matches = props.matches
 
@@ -287,14 +307,13 @@ function UserList(props) {
             })}
         </ul>
     )
-
 }
 
-function Matches() {
 
+//Create component to handle page with current user matches in client side
+function Matches() {
     const [matches, setMatches] = React.useState('')
     const [pages, setPages] = React.useState([])
-
 
     function getMatchUser(page) {
         request({ method: 'GET', path: `/api/matches?page=${page}` })
@@ -311,7 +330,6 @@ function Matches() {
     }
 
     React.useEffect(() => {
-
         getMatchUser(1)
     }, [])
 
@@ -336,10 +354,12 @@ function Matches() {
             </div>
         );
     }
+
     return <div>Loading...</div>
 }
 
 
+//Create component to handle user details from matches in client side
 function UserDetail(props) {
     const [user, setUser] = React.useState({ user_img: [] })
 
@@ -371,12 +391,12 @@ function UserDetail(props) {
             </Carousel>
             <br></br>
             <div className="text">
-            <div> <i className="fas fa-user"></i> {user.user_name}</div>
-            <div> <i className="fas fa-paw"></i> {user.breed}</div>
-            <div> <i className="fas fa-venus-mars"></i> {user.gender}</div>
-            <div> <i className="fas fa-envelope"></i> {user.email}</div>
-            <div> <i className="fas fa-map-pin"></i> {user.location}</div>
-            <div> {user.summary}</div>
+                <div> <i className="fas fa-user"></i> {user.user_name}</div>
+                <div> <i className="fas fa-paw"></i> {user.breed}</div>
+                <div> <i className="fas fa-venus-mars"></i> {user.gender}</div>
+                <div> <i className="fas fa-envelope"></i> {user.email}</div>
+                <div> <i className="fas fa-map-pin"></i> {user.location}</div>
+                <div> {user.summary}</div>
             </div>
             <br></br>
             <Button variant="info" href={`/chat/${roomId}`}> Start chat </Button>
@@ -386,7 +406,7 @@ function UserDetail(props) {
 
 
 //*******HANDLE FETCH******/
-
+//Create utility function to handle requests to the server 
 function request({ method, body, path }) {
     return fetch(path, {
         method,
@@ -402,6 +422,8 @@ function request({ method, body, path }) {
             }
             return response.json();
         })
+
+        //Catching errors 
         .catch(error => {
             if (error.message === "401") {
                 localStorage.removeItem('session-key');
@@ -410,8 +432,9 @@ function request({ method, body, path }) {
         })
 }
 
-//********CHAT******/
 
+//********CHAT******/
+//Create component to handle Chat in client side
 function Chat(props) {
     let socket = props.socket;
 
@@ -419,31 +442,36 @@ function Chat(props) {
     const targetUser = chatId.replace(localStorage.getItem('user'), "")
 
     const [message, setMessage] = React.useState("");
+
     React.useEffect(() => {
+        //Handle room join in a client side 
         socket.emit('join', {
             room: chatId,
             user: localStorage.getItem('user')
         })
+
+        //Handle showing messages in a client side
         socket.on("message", msg => {
-            console.log('message===>', msg)
             let element = document.querySelector("#mess");
             let child = document.createElement('DIV');
 
             if (msg.message === 'join') {
                 child.className += 'join';
                 child.innerHTML = `<div><p>${msg.username} has entered the room</p></div>`;
+
+                //Scrol down automatically with every new message
                 $(".chat").stop().animate({ scrollTop: $(".chat")[0].scrollHeight }, 1000);
             } else if (localStorage.getItem('user') === msg.username) {
-                console.log('localstr==>', localStorage.getItem('user'))
                 child.className += 'current-user-message';
-                child.innerHTML = `<div>${msg.message}</div>`;
+                child.innerHTML = `<div>${msg.message}</div><small>${msg.username}<small>`;
                 $(".chat").stop().animate({ scrollTop: $(".chat")[0].scrollHeight }, 1000);
             } else {
                 child.className += 'user-message';
-                child.innerHTML = `<div>${msg.message}</div>`;
+                child.innerHTML = `<div>${msg.message}</div><small>${targetUser}<small>`;
                 $(".chat").stop().animate({ scrollTop: $(".chat")[0].scrollHeight }, 1000);
             }
 
+            //Add and show every new message
             element.appendChild(child);
         });
     }, [])
@@ -455,7 +483,6 @@ function Chat(props) {
     }
 
     const onClick = () => {
-        console.log('Clicked==>')
         if (data.message !== "") {
             socket.emit("chat", data);
             setMessage("");
@@ -479,10 +506,12 @@ function Chat(props) {
 
 
 //*******ROUTES**********/
+//Create utility component to handle all routes except login page in client side
 function PrivateRoute() {
     const socket = io()
     const sessionKey = localStorage.getItem('session-key');
     const history = useHistory();
+
     if (!sessionKey) {
         history.push("/");
         return;
@@ -497,10 +526,12 @@ function PrivateRoute() {
             <Route path="/chat/:id" render={routeProps => <Chat socket={socket} {...routeProps} />} />
         </div>
     );
-
 }
 
+
+//Create main component to handle routes in client side
 function App() {
+
     return (
         <Router>
             <div>
@@ -521,7 +552,7 @@ function App() {
     );
 }
 
-
+//Render full App 
 ReactDOM.render(<App />, document.getElementById('root'))
 
 
