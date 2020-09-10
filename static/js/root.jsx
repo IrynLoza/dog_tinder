@@ -133,7 +133,6 @@ function UserProfile() {
     function getCurrentUser() {
         request({ method: 'GET', path: "/api/current-user" })
             .then((data) => {
-                console.log(data)
                 setState(data)
             })
     }
@@ -146,7 +145,6 @@ function UserProfile() {
     function handleClick() {
         request({ method: "PUT", body: state, path: "/api/update/profile" })
             .then((data) => {
-                console.log('data from handleClick', data)
             })
     }
 
@@ -216,7 +214,6 @@ function Users() {
     function getRandomUser() {
         request({ method: 'GET', path: '/api/random-user' })
             .then((data) => {
-                console.log(data)
                 setImage(data.user_img)
                 setName(data.user_name)
                 setSummary(data.summary)
@@ -318,9 +315,8 @@ function Matches() {
     function getMatchUser(page) {
         request({ method: 'GET', path: `/api/matches?page=${page}` })
             .then((data) => {
-                console.log(data)
                 setMatches(data.matches)
-
+                
                 let arr = []
                 for (let i = 0; i < data.pages; i++) {
                     arr.push(i + 1)
