@@ -1,11 +1,9 @@
 from flask import Flask, render_template, request, flash, session, redirect, jsonify
 from flask_jwt_extended import JWTManager, create_access_token, get_jwt_identity, jwt_required
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
-
 from model import connect_to_db
 from random import choice, randint
 from passlib.hash import argon2
-
 
 import json
 import crud
@@ -22,6 +20,7 @@ jwt = JWTManager(app)
 socketio = SocketIO(app) 
 
 
+#The main endpoint
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
@@ -58,6 +57,7 @@ def login():
             #use jwt (json web token) instead of cookies
             access_token = create_access_token(identity = {'user_name': user.user_name, 'user_id': user.user_id})
             return jsonify({'status': 'ok', 'access_token': access_token})
+
     return jsonify({'status': 'ERROR', 'message': 'Username or password is not correct'})
 
 
@@ -69,9 +69,6 @@ def get_random_user():
     current_id = get_jwt_identity()['user_id']
     ignore_list = [current_id]
 
-    # TODO 
-    # 1 create the query with join and combine two functions
-    # 2 get count all records from users and use in randint
     likes = crud.get_likes_by_user(current_id)
     for like in likes:
         ignore_list.append(like.target_user_id)
@@ -90,7 +87,6 @@ def get_random_user():
     response = user.serialize()
     response['user_img'] = user_img.serialize()
  
-
     return jsonify(response)
 
 
@@ -98,6 +94,7 @@ def get_random_user():
 @jwt_required
 def get_likes():
     """Get likes from current user""" 
+
     data = request.get_json()
     
     target_id = data['target_id']
@@ -114,6 +111,7 @@ def get_likes():
         crud.create_match(current_user_id, target_id)
   
     return jsonify({'status': 'ok'})
+
 
 @app.route("/api/dislike", methods=['POST']) 
 @jwt_required
@@ -132,7 +130,7 @@ def get_dislikes():
 @app.route("/api/matches")
 @jwt_required
 def get_match():
-    """"""
+    """Get match"""
     
     current_id = get_jwt_identity()['user_id']
 
@@ -160,7 +158,6 @@ def get_match():
         user['user_img'] = user_img.serialize()
         result.append(user)
     
-    print(query_page)
     page = int(query_page) - 1
     limit = 10
     offset = 0
@@ -174,10 +171,11 @@ def get_match():
 
     return jsonify({'matches': result[offset:end], 'pages': counted_pages}) 
 
+
 @app.route("/api/users/<user_id>")
 @jwt_required
 def get_user_by_id(user_id):
-    """"""
+    """Get user by id"""
    
     user = (crud.get_user_by_id(user_id)).serialize()
     user_imgs = crud.get_user_imgs_by_id(user_id)
@@ -187,9 +185,11 @@ def get_user_by_id(user_id):
 
     return jsonify(user)
 
+
 @app.route("/api/current-user")  
 @jwt_required
 def get_current_user():
+    """Get current user"""
 
     current_id = get_jwt_identity()['user_id']
     user = crud.get_user_by_id(current_id).serialize()
@@ -199,10 +199,12 @@ def get_current_user():
 
     return jsonify(user)
 
+
 #PUT - method for update
 @app.route("/api/update/profile", methods=["PUT"]) 
 @jwt_required
 def update_profile():
+    """Update user profile"""
 
     data = request.get_json()
     current_id = get_jwt_identity()['user_id']
@@ -218,28 +220,27 @@ def update_profile():
 #***CREATE CHAT***
 @socketio.on("chat")
 def handleMessage(data):
-    """"""
+    """Handle sending and getting messages"""
     
-    print(f'MessaGE====>{data}')  
     username = data['user']
     room = data['room']
     message = data['message']
-    print(f'message - {room}')
     send({'username': username, 'message': message}, room=room)
 
     return None
 
+
 @socketio.on('join')
 def on_join(data):
-    """"""
+    """Handle join room for chat"""
 
-    print('JOIN==>')
     username = data['user']
     room = data['room']
     join_room(room)
-    print(f'join - {room}')
     send({'username': username, 'message': 'join'}, room=room)
        
+
+
 
 if __name__ == '__main__':
     connect_to_db(app)

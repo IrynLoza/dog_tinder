@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+#Set up configurations 
 def connect_to_db(flask_app, db_uri='postgresql:///tinder', echo=True):
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     flask_app.config['SQLALCHEMY_ECHO'] = echo
@@ -31,6 +32,8 @@ class User(db.Model):
     summary = db.Column(db.Text)
     preferences = db.Column(db.Text)
 
+    """Create many-to-many relationship between users and likes tables, users and dislikes and 
+    users and matches"""
     like_owner = db.relationship('Like', backref='owner_id', foreign_keys = 'Like.user_id')
     like_target = db.relationship('Like', backref='target_id', foreign_keys = 'Like.target_user_id')
 
@@ -40,6 +43,7 @@ class User(db.Model):
     match_owner = db.relationship('Match', backref='match_owner_id', foreign_keys = 'Match.user_id')
     match_target = db.relationship('Match', backref='match_target_id', foreign_keys = 'Match.target_user_id')
    
+   #Serialize method for making serializing objects to JSON
     def serialize(self):
         return {
             'user_id': self.user_id,
@@ -52,17 +56,9 @@ class User(db.Model):
             'preferences': self.preferences,
         }
 
+    #Rerp the method take and object parameter and returns a printable representation
     def __repr__(self):
         return f'<User id={self.user_id} name={self.user_name} email={self.email} breed={self.breed}>' 
-
-###MAIN USER
-#create_user('cake', 'test', 'cake@gmail.com', 'pembroke', '95134', 'male', 
-# 'Love food, offleash parks, puzzle games and play with dogs', 
-# 'Looking for crazy friend to have fun together. Obsessed with pugs') 
-# 
-# file:///Users/iryna/Desktop/49761386_2380090165608886_1781921681309171712_o.jpg
-# file:///Users/iryna/Desktop/51998016_2403675836583652_5566758772212236288_o.jpg
-# file:///Users/iryna/Desktop/42968223_2308724572745446_7582145602897575936_o.jpg        
 
 
 class Image(db.Model):
@@ -76,6 +72,7 @@ class Image(db.Model):
                         )  
     image_url = db.Column(db.String, nullable=False) 
 
+    #Create many to one relationship between images and users tables
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
 
     user = db.relationship('User', backref='images')
@@ -102,6 +99,7 @@ class Like(db.Model):
     def __repr__(self):
         return f'<Like id={self.like_id} target user id={self.target_user_id}>' 
 
+
 class Dislike(db.Model):
     """A user dislikes."""
 
@@ -113,7 +111,6 @@ class Dislike(db.Model):
     
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     target_user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
-
 
 
     def __repr__(self):
