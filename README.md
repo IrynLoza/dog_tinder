@@ -6,11 +6,15 @@ Dating full stack web App for dogs.
 
 **Server side:** Python, Flask, SQLAlchemy, PostgreSQL, Socket.io, PASSlib, JWT
 
-### Demo
-Click on image to redirect on Youtube video
+### Main files
 
-<a href="https://youtu.be/p8IwqtxmfNA" target="_blank"><img src="https://res.cloudinary.com/dogtinder/image/upload/v1600112143/dogTinder/login_f9id9b.png" 
-alt="IMAGE ALT TEXT HERE" width="240" height="200" border="10" /></a>
+**root.jsx** for handling client side
+
+**model.py** with tables represented by classes 
+
+**seed-database.py** for seeding database with 100 random users
+
+**server.py** for handling server side
 
 ### Setup
 
@@ -70,6 +74,13 @@ Open App in localHost and enjoy dogTinder!
 
 ## Chat
 ![alt text](https://res.cloudinary.com/dogtinder/image/upload/v1600112144/dogTinder/Screen_Shot_2020-09-14_at_10.53.53_AM_wxfwth.png)
+
+
+### Demo
+Click on image to redirect on Youtube video
+
+<a href="https://youtu.be/p8IwqtxmfNA" target="_blank"><img src="https://res.cloudinary.com/dogtinder/image/upload/v1600112143/dogTinder/login_f9id9b.png" 
+alt="IMAGE ALT TEXT HERE" width="240" height="200" border="10" /></a>
 
 Please, share DogTinder with your fluffy friends! 
 
