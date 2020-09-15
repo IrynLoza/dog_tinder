@@ -2,10 +2,6 @@ import os
 import requests
 import json
 
-# import cloudinary
-# import cloudinary.uploader
-# import cloudinary.api
-
 from random import choice, randint
 from faker import Faker
 
@@ -21,14 +17,6 @@ model.db.create_all()
 
 #Generate fake data
 fake = Faker()
-
-# #install cloudinary config
-# cloudinary.config(  
-#     #import api_key from sh 
-#     cloudinary_key = os.environ['cloudinary_api_key'],
-#     cloudinary_secret = os.environ['cloud_secret_key'],
-#     cloudinary_name = os.environ['cloudinary_name']
-# )
 
 #***CREATE USERS AND IMAGES***
 breed_list = crud.get_breeds()
@@ -71,19 +59,4 @@ for i in range(100):
         user_id = user.user_id
 
         crud.create_image(image_url, user_id) 
-
-        # # create likes for users
-        # for y in range(2):
-        #     user_id = user.user_id
-        #     target_user = choice(crud.get_users())
-        #     target_user_id = target_user.user_id
-        #     if user_id % 2 == 0 and user_id != target_user_id:
-        #         crud.create_like(user_id, target_user_id)
-
-        #     # create dislikes for users    
-        #     for z in range(2):
-        #         user_id = user.user_id
-        #         target_user = choice(crud.get_users())
-        #         target_user_id = target_user.user_id
-        #         if user_id % 2 != 0 and user_id != target_user_id:
-        #             crud.create_dislike(user_id, target_user_id)    
+  
