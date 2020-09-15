@@ -23,7 +23,7 @@ Install the dependencies from requirements.txt using pip3 install:
 pip3 install requirements.txt
 ```
 
-Seed database
+Seed database:
 ```
 python3 seed_database.py
 ```
