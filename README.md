@@ -4,7 +4,7 @@ Dating full stack web App for dogs.
 ### Tech stack 
 **Client side:** JavaScript, React, React Hooks, React Router, Bootstrap, HTML, CSS
 
-**Server side:** Python, Flask, SQLAlchemy, PostgreSQL, Socket.io, PASSlib, JWT
+**Server side:** Python, Flask, SQLAlchemy, PostgreSQL, Socket.io, PASSlib, JWT, Faker
 
 ### Main files
 
