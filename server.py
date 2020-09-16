@@ -78,7 +78,7 @@ def get_random_user():
         ignore_list.append(dislike.target_user_id) 
 
     while True:
-        user_id = randint(1,101)   
+        user_id = randint(1,104)   
         if user_id not in ignore_list:
             break 
 

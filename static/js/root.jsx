@@ -24,6 +24,7 @@ function Logout() {
         localStorage.removeItem('session-key');
         //Redirect to the homepage 
         history.push("/");
+        toastr["info"]('See you next time! Woof woof!')
     }
 
     return (
@@ -31,6 +32,31 @@ function Logout() {
     )
 }
 
+//Create component to handle Signin page in client side
+function Signin() {
+    const history = useHistory();
+
+    function tologin() {
+        history.push("/");
+    }
+
+    return (
+        <div>
+            <div className="text">
+            <h3>Please, use the following data for Login</h3>
+            <br></br>
+            <p>username: cake</p>
+            <p>password: test</p>
+            <br></br>
+            <h3>Thank you!</h3>
+            <br></br>
+            </div>
+            <br></br>
+        <Button variant="info" className="button-color" name="sing_in" onClick={tologin}> Return to Login page </Button>
+        </div>
+    )
+
+}
 
 //Create component to handle Login page in client side
 function Login() {
@@ -72,9 +98,13 @@ function Login() {
                     localStorage.setItem('user', userName);
                     history.push("/users");
                 } else {
-                    alert('Invalid Email or Password')
+                    toastr["warning"]('Invalid Email or Password')
                 }
             })
+    }
+
+    function sign() {
+        history.push("/signin");
     }
 
     return (<div>
@@ -86,7 +116,7 @@ function Login() {
             <Form.Control type="password" name="password" onChange={e => setPassword(e.target.value)}></Form.Control>
             <br></br>
             <Button className="margin-right button-color" variant="info" name="log_in" onClick={login}> Log in </Button>
-            <Button variant="info" className="button-color" name="sing_in"> Sign in </Button>
+            <Button variant="info" className="button-color" name="sing_in" onClick={sign}> Sign in </Button>
         </Form>
     </div>
     );
@@ -101,7 +131,7 @@ function HeaderNavigation() {
     const location = useLocation();
 
     //Show Navigation if user not in login page
-    if (location.pathname === '/') return null;
+    if (location.pathname === '/' || location.pathname === '/signin') return null;
 
     return (
         <Navbar className="navbar-color" variant="dark">
@@ -145,8 +175,11 @@ function UserProfile() {
     function handleClick() {
         request({ method: "PUT", body: state, path: "/api/update/profile" })
             .then((data) => {
+                toastr["success"]('Profile successfully was updated!')
             })
     }
+
+    // const [show, setShow] = useState(true);
 
     return (
         <div onChange={handleChange}>
@@ -194,7 +227,7 @@ function UserProfile() {
                 <label>Preferences</label>
                 <Form.Control as="textarea" rows="2" name="preferences" defaultValue={state.preferences} />
                 <br></br>
-                <Button variant="info" name="save" onClick={handleClick}>Save changes</Button>
+                <Button variant="info" name="save" onClick={handleClick}>Save changes</Button>        
             </Form>
         </div>
     );
@@ -232,6 +265,7 @@ function Users() {
             .then(data => {
                 if (data.status === 'ok') {
                     getRandomUser()
+                    toastr["success"]('User successfully was liked!')
                 } else {
                 }
             })
@@ -244,6 +278,7 @@ function Users() {
             .then(data => {
                 if (data.status === 'ok') {
                     getRandomUser()
+                    toastr["success"]('User successfully was skipped!')
                 } else {
                 }
             })
@@ -538,6 +573,7 @@ function App() {
                             <Switch>
                                 {/* exact show the main route */}
                                 <Route exact path="/"><Login /></Route>
+                                <Route path="/signin"><Signin /></Route>
                                 <PrivateRoute />
                             </Switch>
                         </Col>
