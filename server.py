@@ -242,5 +242,5 @@ def on_join(data):
 if __name__ == '__main__':
     connect_to_db(app)
     #Use socket and Flask server together
-    socketio.run(app, host='0.0.0.0', port=80)
+    socketio.run(app, host='0.0.0.0')
     # app.run(host='0.0.0.0', debug=True)
