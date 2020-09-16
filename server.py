@@ -46,9 +46,6 @@ def login():
     user = crud.get_user_by_user_name(data['userName'])
    
     input_password = data['password']
-    print(f'user: {user.password}')
-    print(f'argon2: {argon2.verify(input_password, user.password)}')
-    print(f'input password=====>>>>>{input_password}')
     if user:
         if argon2.verify(input_password, user.password) == True:
             session['user'] = {'user_name': user.user_name, 'user_id': user.user_id}
@@ -78,7 +75,7 @@ def get_random_user():
         ignore_list.append(dislike.target_user_id) 
 
     while True:
-        user_id = randint(1,104)   
+        user_id = randint(1,101)   
         if user_id not in ignore_list:
             break 
 
@@ -245,5 +242,5 @@ def on_join(data):
 if __name__ == '__main__':
     connect_to_db(app)
     #Use socket and Flask server together
-    socketio.run(app, host='0.0.0.0', debug=True)
+    socketio.run(app, host='0.0.0.0')
     # app.run(host='0.0.0.0', debug=True)
