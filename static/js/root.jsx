@@ -539,7 +539,7 @@ function Chat(props) {
 //*******ROUTES**********/
 //Create utility component to handle all routes except login page in client side
 function PrivateRoute() {
-    const socket = io({path: "/mysocket"})
+    const socket = io()
     const sessionKey = localStorage.getItem('session-key');
     const history = useHistory();
 
