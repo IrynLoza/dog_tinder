@@ -415,7 +415,7 @@ function UserDetail(props) {
                 {user.user_img.map((img, index) => {
                     return (
                         <Carousel.Item key={index}>
-                            <img className="img-carusel" src={img} alt={`First ${index}`}></img>
+                            <img className="img-carusel d-block w-100" src={img} alt={`First ${index.altText}`}></img>
                         </Carousel.Item>
                     )
                 })}
